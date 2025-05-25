@@ -1,6 +1,6 @@
 # SSSA CLI Tool
 
-A command-line utility written in Ruby for Shamir's Secret Sharing Algorithm, allowing you to split secrets into shares and recombine them.
+A command-line utility written in Ruby for Shamir's Secret Sharing Algorithm, allowing you to split secrets into shares and recombine them to retrieve the secret.
 
 This tool deliberately avoids external dependencies and ships with the complete sssa-ruby implementation to ensure transparency and safety when handling sensitive data.
 
@@ -10,7 +10,7 @@ Shamir's secret sharing (SSS) is an efficient secret sharing algorithm for distr
 
 Shamir's secret sharing is used in some applications to share the access keys to a master secret.
 
-Source: [https://en.wikipedia.org/wiki/Shamir%27s_secret_sharing]
+Source: <https://en.wikipedia.org/wiki/Shamir%27s_secret_sharing>
 
 ## Installation
 
@@ -65,6 +65,6 @@ Ellin Pino (@fenelon) - Original CLI implementation
 
 ## Attribution
 
-This tool is based and includes the SSSA Ruby implementation by Alexander Scheel, Joel May, and Matthew Burket: [https://github.com/SSSaaS/sssa-ruby]
+This tool is based and includes the SSSA Ruby implementation by Alexander Scheel, Joel May, and Matthew Burket: <https://github.com/SSSaaS/sssa-ruby>
 
 Licensed under the MIT License.
