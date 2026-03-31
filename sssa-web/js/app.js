@@ -13,36 +13,59 @@
   // ---------------------------------------------------------------------------
   // 1. DOM references
   // ---------------------------------------------------------------------------
-  var modeSplit      = document.getElementById('mode-split');
-  var modeCombine    = document.getElementById('mode-combine');
-  var sectionSplit   = document.getElementById('section-split');
-  var sectionCombine = document.getElementById('section-combine');
-  var inputMinimum   = document.getElementById('input-minimum');
-  var inputTotal     = document.getElementById('input-total');
-  var inputSecret    = document.getElementById('input-secret');
-  var byteCount      = document.getElementById('byte-count');
-  var byteCounter    = document.querySelector('.byte-counter');
-  var btnSplit       = document.getElementById('btn-split');
-  var btnPrint       = document.getElementById('btn-print');
-  var splitOutput    = document.getElementById('split-output');
-  var sharesList     = document.getElementById('shares-list');
-  var shareInputs    = document.getElementById('share-inputs');
-  var btnCombine     = document.getElementById('btn-combine');
-  var combineOutput  = document.getElementById('combine-output');
-  var recoveredText  = document.getElementById('recovered-text');
-  var btnCopySecret  = document.getElementById('btn-copy-secret');
-  var cameraModal    = document.getElementById('camera-modal');
-  var cameraVideo    = document.getElementById('camera-video');
-  var btnCloseCamera = document.getElementById('btn-close-camera');
-  var downloadLink   = document.getElementById('download-link');
+  const modeSplit      = document.getElementById('mode-split');
+  const modeCombine    = document.getElementById('mode-combine');
+  const sectionSplit   = document.getElementById('section-split');
+  const sectionCombine = document.getElementById('section-combine');
+  const inputMinimum   = document.getElementById('input-minimum');
+  const inputTotal     = document.getElementById('input-total');
+  const inputSecret    = document.getElementById('input-secret');
+  const byteCount      = document.getElementById('byte-count');
+  const byteCounter    = document.querySelector('.byte-counter');
+  const btnSplit       = document.getElementById('btn-split');
+  const btnPrint       = document.getElementById('btn-print');
+  const splitOutput    = document.getElementById('split-output');
+  const sharesList     = document.getElementById('shares-list');
+  const splitError     = document.getElementById('split-error');
+  const shareInputs    = document.getElementById('share-inputs');
+  const btnCombine     = document.getElementById('btn-combine');
+  const combineOutput  = document.getElementById('combine-output');
+  const combineError   = document.getElementById('combine-error');
+  const recoveredText  = document.getElementById('recovered-text');
+  const btnCopySecret  = document.getElementById('btn-copy-secret');
+  const ariaStatus     = document.getElementById('aria-status');
+  const cameraModal    = document.getElementById('camera-modal');
+  const cameraVideo    = document.getElementById('camera-video');
+  const cameraErrorEl  = document.getElementById('camera-error');
+  const btnCloseCamera = document.getElementById('btn-close-camera');
+  const downloadLink   = document.getElementById('download-link');
 
   // ---------------------------------------------------------------------------
-  // 2. Mode toggle
+  // 2. Inline error helpers (replaces alert())
+  // ---------------------------------------------------------------------------
+  function showInlineError(el, message) {
+    el.textContent = message;
+    el.removeAttribute('hidden');
+  }
+
+  function clearInlineError(el) {
+    el.textContent = '';
+    el.setAttribute('hidden', '');
+  }
+
+  function announce(message) {
+    if (ariaStatus) ariaStatus.textContent = message;
+  }
+
+  // ---------------------------------------------------------------------------
+  // 3. Mode toggle
   // ---------------------------------------------------------------------------
   modeSplit.addEventListener('click', function (e) {
     e.preventDefault();
     modeSplit.classList.add('active');
+    modeSplit.setAttribute('aria-selected', 'true');
     modeCombine.classList.remove('active');
+    modeCombine.setAttribute('aria-selected', 'false');
     sectionSplit.removeAttribute('hidden');
     sectionCombine.setAttribute('hidden', '');
   });
@@ -50,21 +73,23 @@
   modeCombine.addEventListener('click', function (e) {
     e.preventDefault();
     modeCombine.classList.add('active');
+    modeCombine.setAttribute('aria-selected', 'true');
     modeSplit.classList.remove('active');
+    modeSplit.setAttribute('aria-selected', 'false');
     sectionCombine.removeAttribute('hidden');
     sectionSplit.setAttribute('hidden', '');
   });
 
   // ---------------------------------------------------------------------------
-  // 3. Byte counter & validation
+  // 4. Byte counter & validation
   // ---------------------------------------------------------------------------
   function updateByteCounter() {
-    var secret = inputSecret.value;
-    var bytes = new TextEncoder().encode(secret).length;
+    const secret = inputSecret.value;
+    const bytes = new TextEncoder().encode(secret).length;
     byteCount.textContent = bytes;
 
-    var qrWarning = document.getElementById('qr-warning');
-    var overLimitMsg = document.getElementById('over-limit-msg');
+    const qrWarning = document.getElementById('qr-warning');
+    const overLimitMsg = document.getElementById('over-limit-msg');
 
     if (bytes > 512) {
       byteCounter.classList.add('over-limit');
@@ -75,8 +100,8 @@
       overLimitMsg.setAttribute('hidden', '');
       // Show QR warning only when under limit but shares would be large
       if (bytes > 0) {
-        var chunks = Math.ceil(bytes / 32);
-        var shareLen = chunks * 88;
+        const chunks = Math.ceil(bytes / 32);
+        const shareLen = chunks * 88;
         if (shareLen > 700) {
           qrWarning.removeAttribute('hidden');
         } else {
@@ -91,12 +116,12 @@
   }
 
   function validateSplit() {
-    var min     = parseInt(inputMinimum.value, 10);
-    var total   = parseInt(inputTotal.value, 10);
-    var secret  = inputSecret.value;
-    var bytes   = new TextEncoder().encode(secret).length;
+    const min     = parseInt(inputMinimum.value, 10);
+    const total   = parseInt(inputTotal.value, 10);
+    const secret  = inputSecret.value;
+    const bytes   = new TextEncoder().encode(secret).length;
 
-    var ok = (
+    const ok = (
       min >= 2 &&
       total >= min &&
       total <= 255 &&
@@ -104,6 +129,7 @@
       bytes <= 512
     );
     btnSplit.disabled = !ok;
+    if (ok) clearInlineError(splitError);
   }
 
   inputMinimum.addEventListener('input', updateByteCounter);
@@ -114,20 +140,21 @@
   updateByteCounter();
 
   // ---------------------------------------------------------------------------
-  // 4. Split handler
+  // 5. Split handler
   // ---------------------------------------------------------------------------
   btnSplit.addEventListener('click', function () {
-    var min    = parseInt(inputMinimum.value, 10);
-    var total  = parseInt(inputTotal.value, 10);
-    var secret = inputSecret.value;
+    const min    = parseInt(inputMinimum.value, 10);
+    const total  = parseInt(inputTotal.value, 10);
+    const secret = inputSecret.value;
 
-    var shares;
+    let shares;
     try {
       shares = SSS.create(min, total, secret);
     } catch (err) {
-      alert('Error creating shares: ' + err.message);
+      showInlineError(splitError, 'Error creating shares: ' + err.message);
       return;
     }
+    clearInlineError(splitError);
 
     // Clear existing shares with safe DOM removal
     while (sharesList.firstChild) {
@@ -135,19 +162,19 @@
     }
 
     shares.forEach(function (share, idx) {
-      var card = document.createElement('div');
+      const card = document.createElement('div');
       card.className = 'share-card';
 
       // Label
-      var label = document.createElement('div');
+      const label = document.createElement('div');
       label.className = 'share-label';
       label.textContent = 'Share ' + (idx + 1) + ' of ' + total;
       card.appendChild(label);
 
       // QR code canvas
-      var qrDiv = document.createElement('div');
+      const qrDiv = document.createElement('div');
       qrDiv.className = 'share-qr';
-      var canvas = document.createElement('canvas');
+      const canvas = document.createElement('canvas');
       try {
         SSS.QR.generate(share, canvas, { size: 200 });
       } catch (e) {
@@ -157,12 +184,16 @@
       card.appendChild(qrDiv);
 
       // Share text — click to copy
-      var shareText = document.createElement('div');
+      const shareText = document.createElement('div');
       shareText.className = 'share-text';
       shareText.textContent = share;
+      shareText.title = 'Click to copy';
+      shareText.setAttribute('role', 'button');
+      shareText.setAttribute('tabindex', '0');
       shareText.addEventListener('click', function () {
         navigator.clipboard.writeText(share).then(function () {
           showTooltip(shareText, 'Copied');
+          announce('Share copied to clipboard');
         }).catch(function () {
           // Clipboard unavailable — silently ignore
         });
@@ -170,7 +201,7 @@
       card.appendChild(shareText);
 
       // Print single share button
-      var btnPdf = document.createElement('button');
+      const btnPdf = document.createElement('button');
       btnPdf.className = 'btn-small share-card-print';
       btnPdf.textContent = 'Print Share ' + (idx + 1);
       btnPdf.addEventListener('click', (function (shareIdx, shareData, shareCanvas) {
@@ -190,7 +221,7 @@
    * Shows a temporary tooltip message above an element, then removes it.
    */
   function showTooltip(anchor, message) {
-    var tip = document.createElement('span');
+    const tip = document.createElement('span');
     tip.className = 'copied-tooltip';
     tip.textContent = message;
     anchor.appendChild(tip);
@@ -202,28 +233,19 @@
   }
 
   // ---------------------------------------------------------------------------
-  // 5a. Save single share as PDF
+  // 6a. Save single share as PDF
   // ---------------------------------------------------------------------------
-  function generateTimestampedName(prefix) {
-    var now = new Date();
-    var ts = now.getFullYear()
-      + String(now.getMonth() + 1).padStart(2, '0')
-      + String(now.getDate()).padStart(2, '0')
-      + '-' + String(now.getHours()).padStart(2, '0')
-      + String(now.getMinutes()).padStart(2, '0')
-      + String(now.getSeconds()).padStart(2, '0');
-    var rand = Math.random().toString(36).substring(2, 8);
-    return prefix + ts + '-' + rand;
-  }
-
   function saveSingleSharePDF(num, total, shareData, shareCanvas) {
-    var qrDataURL = shareCanvas.toDataURL('image/png');
-    var title = generateTimestampedName('sss-share-' + num + 'of' + total + '-');
+    const qrDataURL = shareCanvas.toDataURL('image/png');
+    const title = SSS.timestampedName('sss-share-' + num + 'of' + total + '-');
 
-    var w = window.open('', '_blank');
-    if (!w) return;
+    const w = window.open('', '_blank');
+    if (!w) {
+      showInlineError(splitError, 'Popup blocked — please allow popups to print individual shares.');
+      return;
+    }
 
-    var doc = w.document;
+    const doc = w.document;
     doc.open();
     doc.write('<!DOCTYPE html><html><head><meta charset="utf-8">');
     doc.write('<title>' + title + '</title>');
@@ -255,42 +277,43 @@
   }
 
   // ---------------------------------------------------------------------------
-  // 5b. Print all shares
+  // 6b. Print all shares
   // ---------------------------------------------------------------------------
   btnPrint.addEventListener('click', function () {
-    var originalTitle = document.title;
-    document.title = generateTimestampedName('sss-');
+    const originalTitle = document.title;
+    document.title = SSS.timestampedName('sss-');
     window.print();
     document.title = originalTitle;
   });
 
   // ---------------------------------------------------------------------------
-  // 6. Combine cards
+  // 7. Combine cards
   // ---------------------------------------------------------------------------
-  var cameraController = null;
-  var activeCameraSlot = null;
+  let cameraController = null;
+  let activeCameraSlot = null;
 
   /**
    * Creates a filled (read-only) share card and inserts it before the Add Share card.
    */
   function createFilledCard(shareData) {
-    var card = document.createElement('div');
+    const card = document.createElement('div');
     card.className = 'combine-card combine-card-filled';
     card.dataset.share = shareData;
 
-    var label = document.createElement('div');
+    const label = document.createElement('div');
     label.className = 'combine-card-label';
     label.textContent = 'Share';
     card.appendChild(label);
 
-    var preview = document.createElement('div');
+    const preview = document.createElement('div');
     preview.className = 'combine-card-preview';
     preview.textContent = shareData.substring(0, 20) + '...';
     card.appendChild(preview);
 
-    var btnRemove = document.createElement('button');
+    const btnRemove = document.createElement('button');
     btnRemove.className = 'combine-card-remove';
     btnRemove.textContent = '\u00d7';
+    btnRemove.setAttribute('aria-label', 'Remove share');
     btnRemove.addEventListener('click', function () {
       shareInputs.removeChild(card);
       renumberCards();
@@ -299,7 +322,7 @@
     card.appendChild(btnRemove);
 
     // Insert before the Add Share card (always last child)
-    var addCard = shareInputs.querySelector('.combine-card-add');
+    const addCard = shareInputs.querySelector('.combine-card-add');
     shareInputs.insertBefore(card, addCard);
     renumberCards();
     validateCombine();
@@ -309,7 +332,7 @@
    * Resets the Add Share card back to its 3-button state.
    */
   function resetAddCard() {
-    var addCard = shareInputs.querySelector('.combine-card-add');
+    const addCard = shareInputs.querySelector('.combine-card-add');
     if (!addCard) return;
 
     // Clear everything after the label
@@ -317,12 +340,12 @@
       addCard.removeChild(addCard.lastChild);
     }
 
-    var actions = document.createElement('div');
+    const actions = document.createElement('div');
     actions.className = 'combine-card-actions';
 
     // Scan QR button
     if (SSS.Scanner.hasCamera) {
-      var btnScan = document.createElement('button');
+      const btnScan = document.createElement('button');
       btnScan.className = 'btn-secondary';
       btnScan.textContent = 'Scan QR';
       btnScan.addEventListener('click', function () {
@@ -334,23 +357,23 @@
 
     // Upload QR Code Image button
     if (SSS.Scanner.hasBarcodeDetector) {
-      var btnUpload = document.createElement('button');
+      const btnUpload = document.createElement('button');
       btnUpload.className = 'btn-secondary';
       btnUpload.textContent = 'Upload QR Image';
 
-      var fileInput = document.createElement('input');
+      const fileInput = document.createElement('input');
       fileInput.type = 'file';
       fileInput.accept = 'image/*';
       fileInput.style.display = 'none';
 
       fileInput.addEventListener('change', function () {
-        var file = fileInput.files[0];
+        const file = fileInput.files[0];
         if (!file) return;
         SSS.Scanner.scanImage(file).then(function (text) {
           if (!SSS.isValidShare(text)) {
             showPasteMode(text);
           } else {
-            var dupCard = findDuplicateCard(text);
+            const dupCard = findDuplicateCard(text);
             if (dupCard) {
               highlightDuplicate(dupCard);
             } else {
@@ -358,7 +381,14 @@
             }
           }
         }).catch(function (err) {
-          alert('Could not read QR code from image: ' + err.message);
+          showPasteMode('');
+          // Show error on the paste mode that was just opened
+          const currentAddCard = shareInputs.querySelector('.combine-card-add');
+          const errorEl = currentAddCard && currentAddCard.querySelector('.combine-card-error');
+          if (errorEl) {
+            errorEl.textContent = 'Could not read QR code from image: ' + err.message;
+            errorEl.removeAttribute('hidden');
+          }
         });
         fileInput.value = '';
       });
@@ -372,7 +402,7 @@
     }
 
     // Paste Text button
-    var btnPaste = document.createElement('button');
+    const btnPaste = document.createElement('button');
     btnPaste.className = 'btn-secondary';
     btnPaste.textContent = 'Paste Text';
     btnPaste.addEventListener('click', function () {
@@ -388,7 +418,7 @@
    * @param {string} prefill — optional text to pre-fill the input with
    */
   function showPasteMode(prefill) {
-    var addCard = shareInputs.querySelector('.combine-card-add');
+    const addCard = shareInputs.querySelector('.combine-card-add');
     if (!addCard) return;
 
     // Clear everything after the label
@@ -396,7 +426,7 @@
       addCard.removeChild(addCard.lastChild);
     }
 
-    var textInput = document.createElement('input');
+    const textInput = document.createElement('input');
     textInput.type = 'text';
     textInput.className = 'combine-card-input';
     textInput.placeholder = 'Paste share here\u2026';
@@ -404,35 +434,37 @@
     textInput.setAttribute('spellcheck', 'false');
     if (prefill) textInput.value = prefill;
 
-    var errorMsg = document.createElement('div');
+    const errorMsg = document.createElement('div');
     errorMsg.className = 'combine-card-error';
     errorMsg.setAttribute('hidden', '');
 
-    textInput.addEventListener('input', function () {
-      var val = textInput.value.trim();
+    function trySubmit() {
+      const val = textInput.value.trim();
       if (val === '') {
         errorMsg.setAttribute('hidden', '');
       } else if (!SSS.isValidShare(val)) {
         errorMsg.textContent = 'Invalid share format';
         errorMsg.removeAttribute('hidden');
       } else {
-        var dupCard = findDuplicateCard(val);
+        const dupCard = findDuplicateCard(val);
         if (dupCard) {
           errorMsg.textContent = 'Duplicate share';
           errorMsg.removeAttribute('hidden');
           highlightDuplicate(dupCard);
           return;
         }
-        errorMsg.setAttribute('hidden', '');
-        errorMsg.removeAttribute('hidden');
+        createFilledCard(val);
+        resetAddCard();
       }
-    });
+    }
+
+    textInput.addEventListener('input', trySubmit);
 
     addCard.appendChild(textInput);
     addCard.appendChild(errorMsg);
 
     // Back button to return to 3-button mode
-    var btnBack = document.createElement('button');
+    const btnBack = document.createElement('button');
     btnBack.className = 'btn-small combine-card-paste-back';
     btnBack.textContent = 'Back';
     btnBack.addEventListener('click', function () {
@@ -444,7 +476,7 @@
 
     // Trigger validation if prefilled
     if (prefill) {
-      textInput.dispatchEvent(new Event('input'));
+      trySubmit();
     }
   }
 
@@ -452,10 +484,10 @@
    * Creates the Add Share card and appends it to shareInputs.
    */
   function createAddShareCard() {
-    var card = document.createElement('div');
+    const card = document.createElement('div');
     card.className = 'combine-card combine-card-add';
 
-    var label = document.createElement('div');
+    const label = document.createElement('div');
     label.className = 'combine-card-label';
     label.textContent = 'Add Share';
     card.appendChild(label);
@@ -468,9 +500,9 @@
    * Updates filled card labels to reflect current order.
    */
   function renumberCards() {
-    var cards = shareInputs.querySelectorAll('.combine-card-filled');
+    const cards = shareInputs.querySelectorAll('.combine-card-filled');
     cards.forEach(function (c, i) {
-      var lbl = c.querySelector('.combine-card-label');
+      const lbl = c.querySelector('.combine-card-label');
       if (lbl) {
         lbl.textContent = 'Share ' + (i + 1);
       }
@@ -481,8 +513,8 @@
    * Returns the filled card element if a share with the same data exists, or null.
    */
   function findDuplicateCard(shareData) {
-    var cards = shareInputs.querySelectorAll('.combine-card-filled');
-    for (var i = 0; i < cards.length; i++) {
+    const cards = shareInputs.querySelectorAll('.combine-card-filled');
+    for (let i = 0; i < cards.length; i++) {
       if (cards[i].dataset.share === shareData) return cards[i];
     }
     return null;
@@ -493,10 +525,10 @@
    */
   function highlightDuplicate(card) {
     // Remove any existing duplicate error on this card
-    var existing = card.querySelector('.combine-card-error');
+    const existing = card.querySelector('.combine-card-error');
     if (existing) existing.parentNode.removeChild(existing);
 
-    var errorMsg = document.createElement('div');
+    const errorMsg = document.createElement('div');
     errorMsg.className = 'combine-card-error';
     errorMsg.textContent = 'Duplicate share';
     card.appendChild(errorMsg);
@@ -519,8 +551,8 @@
    * Returns an array of share strings from filled cards.
    */
   function getValidShares() {
-    var result = [];
-    var cards = shareInputs.querySelectorAll('.combine-card-filled');
+    const result = [];
+    const cards = shareInputs.querySelectorAll('.combine-card-filled');
     cards.forEach(function (c) {
       result.push(c.dataset.share);
     });
@@ -538,26 +570,33 @@
   createAddShareCard();
 
   // ---------------------------------------------------------------------------
-  // 7. Camera
+  // 8. Camera
   // ---------------------------------------------------------------------------
   function openCamera() {
     cameraModal.removeAttribute('hidden');
+    cameraErrorEl.setAttribute('hidden', '');
+    btnCloseCamera.focus();
     try {
       cameraController = SSS.Scanner.startCamera(cameraVideo, function (text) {
-        var callback = activeCameraSlot && activeCameraSlot.callback;
+        const callback = activeCameraSlot && activeCameraSlot.callback;
         closeCamera();
         if (callback && SSS.isValidShare(text)) {
-          var dupCard = findDuplicateCard(text);
+          const dupCard = findDuplicateCard(text);
           if (dupCard) {
             highlightDuplicate(dupCard);
           } else {
             callback(text);
           }
         }
+      }, function (err) {
+        // Camera permission denied or other error
+        cameraVideo.setAttribute('hidden', '');
+        cameraErrorEl.textContent = 'Camera unavailable: ' + err.message;
+        cameraErrorEl.removeAttribute('hidden');
       });
     } catch (err) {
       closeCamera();
-      alert('Could not start camera: ' + err.message);
+      showInlineError(combineError, 'Could not start camera: ' + err.message);
     }
   }
 
@@ -567,6 +606,8 @@
       cameraController = null;
     }
     cameraModal.setAttribute('hidden', '');
+    cameraVideo.removeAttribute('hidden');
+    cameraErrorEl.setAttribute('hidden', '');
     activeCameraSlot = null;
   }
 
@@ -582,34 +623,45 @@
   });
 
   // ---------------------------------------------------------------------------
-  // 8. Combine
+  // 9. Keyboard shortcuts
+  // ---------------------------------------------------------------------------
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !cameraModal.hasAttribute('hidden')) {
+      closeCamera();
+    }
+  });
+
+  // ---------------------------------------------------------------------------
+  // 10. Combine
   // ---------------------------------------------------------------------------
   btnCombine.addEventListener('click', function () {
-    var shares = getValidShares();
-    var secret;
+    const shares = getValidShares();
+    let secret;
     try {
       secret = SSS.combine(shares);
     } catch (err) {
-      alert('Error combining shares: ' + err.message);
+      showInlineError(combineError, 'Error combining shares: ' + err.message);
       return;
     }
+    clearInlineError(combineError);
     recoveredText.value = secret;
     combineOutput.removeAttribute('hidden');
   });
 
   // ---------------------------------------------------------------------------
-  // 9. Copy
+  // 11. Copy
   // ---------------------------------------------------------------------------
   btnCopySecret.addEventListener('click', function () {
     navigator.clipboard.writeText(recoveredText.value).then(function () {
       showTooltip(btnCopySecret, 'Copied');
+      announce('Secret copied to clipboard');
     }).catch(function () {
       // Clipboard unavailable — silently ignore
     });
   });
 
   // ---------------------------------------------------------------------------
-  // 10. Download link
+  // 12. Download link
   // ---------------------------------------------------------------------------
   if (downloadLink) {
     downloadLink.addEventListener('click', function (e) {
@@ -621,11 +673,12 @@
   }
 
   // ---------------------------------------------------------------------------
-  // 11. Warn before closing if shares are visible
+  // 13. Warn before closing if shares are visible
   // ---------------------------------------------------------------------------
   window.addEventListener('beforeunload', function (e) {
     if (!splitOutput.hasAttribute('hidden')) {
       e.preventDefault();
+      e.returnValue = '';
       return '';
     }
   });

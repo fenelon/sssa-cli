@@ -11,6 +11,8 @@
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary">
   <link rel="canonical" href="https://secretshards.com">
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='50,10 90,85 10,85' fill='%23e00000'/></svg>">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -34,13 +36,13 @@
     </header>
 
     <!-- Mode toggle -->
-    <nav class="mode-toggle">
-      <a href="#" id="mode-split" class="mode-link active">Split</a>
-      <a href="#" id="mode-combine" class="mode-link">Combine</a>
+    <nav class="mode-toggle" role="tablist">
+      <a href="#" id="mode-split" class="mode-link active" role="tab" aria-selected="true" aria-controls="section-split">Split</a>
+      <a href="#" id="mode-combine" class="mode-link" role="tab" aria-selected="false" aria-controls="section-combine">Combine</a>
     </nav>
 
     <!-- Split mode -->
-    <section id="section-split">
+    <section id="section-split" role="tabpanel" aria-labelledby="mode-split">
       <div class="field-group">
         <label class="label">Threshold</label>
         <div class="threshold-row">
@@ -62,6 +64,7 @@
 
       <div class="actions">
         <button id="btn-split" class="btn-primary" disabled>Split</button>
+        <div id="split-error" class="inline-error" hidden></div>
       </div>
 
       <div id="split-output" class="output" hidden>
@@ -74,11 +77,12 @@
     </section>
 
     <!-- Combine mode -->
-    <section id="section-combine" hidden>
+    <section id="section-combine" role="tabpanel" aria-labelledby="mode-combine" hidden>
       <div id="share-inputs" class="combine-card-grid"></div>
 
       <div class="actions">
         <button id="btn-combine" class="btn-primary" disabled>Combine</button>
+        <div id="combine-error" class="inline-error" hidden></div>
       </div>
 
       <div id="combine-output" class="output" hidden>
@@ -86,6 +90,7 @@
         <div class="recovered-secret">
           <textarea id="recovered-text" readonly rows="4"></textarea>
           <button id="btn-copy-secret" class="btn-secondary">Copy</button>
+        <div id="aria-status" class="sr-only" aria-live="polite"></div>
         </div>
         <p class="hint">If this doesn't look right, check that you're using the correct shares.</p>
       </div>
@@ -121,13 +126,14 @@
   </main>
 
   <!-- Camera modal -->
-  <div id="camera-modal" class="modal" hidden>
+  <div id="camera-modal" class="modal" role="dialog" aria-modal="true" aria-label="Scan QR Code" hidden>
     <div class="modal-content">
       <div class="modal-header">
         <span>Scan QR Code</span>
-        <button id="btn-close-camera" class="btn-close">&times;</button>
+        <button id="btn-close-camera" class="btn-close" aria-label="Close">&times;</button>
       </div>
       <video id="camera-video" autoplay playsinline></video>
+      <div id="camera-error" class="camera-error" hidden></div>
     </div>
   </div>
 

@@ -7,7 +7,7 @@
 
   if (!window.SSS) window.SSS = {};
 
-  var Scanner = {};
+  const Scanner = {};
 
   // Feature detection
   Scanner.hasBarcodeDetector = typeof BarcodeDetector !== 'undefined';
@@ -22,7 +22,7 @@
     if (!Scanner.hasBarcodeDetector) {
       return Promise.reject(new Error('BarcodeDetector not available'));
     }
-    var detector = new BarcodeDetector({ formats: ['qr_code'] });
+    const detector = new BarcodeDetector({ formats: ['qr_code'] });
     return createImageBitmap(file).then(function(bitmap) {
       return detector.detect(bitmap);
     }).then(function(barcodes) {
@@ -34,16 +34,17 @@
   // Start camera scanning
   // videoElement: HTMLVideoElement to show the feed
   // onDetect: function(text) called when a QR code is detected
+  // onError: function(err) called when camera access fails
   // Returns: { stop: function() } to stop scanning
-  Scanner.startCamera = function(videoElement, onDetect) {
+  Scanner.startCamera = function(videoElement, onDetect, onError) {
     if (!Scanner.hasCamera) {
       throw new Error('Camera scanning not available');
     }
 
-    var detector = new BarcodeDetector({ formats: ['qr_code'] });
-    var stream = null;
-    var animationId = null;
-    var stopped = false;
+    const detector = new BarcodeDetector({ formats: ['qr_code'] });
+    let stream = null;
+    let animationId = null;
+    let stopped = false;
 
     navigator.mediaDevices.getUserMedia({
       video: { facingMode: 'environment' }
@@ -73,7 +74,13 @@
         scan();
       };
     }).catch(function(err) {
-      if (!stopped) console.error('Camera error:', err);
+      if (!stopped) {
+        if (onError) {
+          onError(err);
+        } else {
+          console.error('Camera error:', err);
+        }
+      }
     });
 
     return {

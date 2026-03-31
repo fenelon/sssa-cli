@@ -1,31 +1,40 @@
 (function() {
   'use strict';
   if (!window.SSS) window.SSS = {};
-  var Bundler = {};
+  const Bundler = {};
 
-  var CSS_FILES = ['css/style.css'];
-  var JS_FILES = ['js/sss.js', 'js/qr-generate.js', 'js/scanner.js', 'js/app.js'];
+  const CSS_FILES = ['css/style.css'];
+  const JS_FILES = ['js/sss.js', 'js/qr-generate.js', 'js/scanner.js', 'js/app.js'];
 
   Bundler.download = function() {
-    var allPaths = CSS_FILES.concat(JS_FILES);
-    var fetches = allPaths.map(function(path) {
+    const allPaths = ['index.html'].concat(CSS_FILES, JS_FILES);
+    const fetches = allPaths.map(function(path) {
       return fetch(path).then(function(r) { return r.text(); }).then(function(text) {
         return { path: path, content: text };
       });
     });
 
     Promise.all(fetches).then(function(results) {
-      var cssContent = '';
-      var jsContent = '';
+      let cssContent = '';
+      let jsContent = '';
+      let htmlSource = '';
       results.forEach(function(file) {
-        if (file.path.endsWith('.css')) {
+        if (file.path === 'index.html') {
+          htmlSource = file.content;
+        } else if (file.path.endsWith('.css')) {
           cssContent += file.content + '\n';
         } else {
           jsContent += file.content + '\n';
         }
       });
 
-      var parts = [];
+      // Parse the original HTML to extract pristine body content
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(htmlSource, 'text/html');
+      const mainHTML = doc.querySelector('main').outerHTML;
+      const modalHTML = doc.getElementById('camera-modal').outerHTML;
+
+      const parts = [];
       parts.push('<!DOCTYPE html>');
       parts.push('<html lang="en">');
       parts.push('<head>');
@@ -38,45 +47,20 @@
       parts.push('  <style>.download-banner { display: none !important; }</style>');
       parts.push('</head>');
       parts.push('<body>');
-
-      // Clone DOM to avoid capturing user-entered secrets
-      var mainClone = document.querySelector('main').cloneNode(true);
-      // Clear any input values from the clone
-      mainClone.querySelectorAll('input, textarea').forEach(function(el) {
-        el.value = '';
-        el.removeAttribute('value');
-        el.textContent = '';
-      });
-      // Remove generated share output
-      var cloneOutput = mainClone.querySelector('#split-output');
-      if (cloneOutput) cloneOutput.setAttribute('hidden', '');
-      var cloneShares = mainClone.querySelector('#shares-list');
-      if (cloneShares) while (cloneShares.firstChild) cloneShares.removeChild(cloneShares.firstChild);
-      var cloneCombineOut = mainClone.querySelector('#combine-output');
-      if (cloneCombineOut) cloneCombineOut.setAttribute('hidden', '');
-
-      parts.push(mainClone.outerHTML);
-      parts.push(document.getElementById('camera-modal').outerHTML);
+      parts.push(mainHTML);
+      parts.push(modalHTML);
       parts.push('  <script>');
       parts.push(jsContent);
       parts.push('  <\/script>');
       parts.push('</body>');
       parts.push('</html>');
 
-      var html = parts.join('\n');
-      var blob = new Blob([html], { type: 'text/html' });
-      var url = URL.createObjectURL(blob);
-      var a = document.createElement('a');
+      const html = parts.join('\n');
+      const blob = new Blob([html], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
       a.href = url;
-      var now = new Date();
-      var ts = now.getFullYear()
-        + String(now.getMonth() + 1).padStart(2, '0')
-        + String(now.getDate()).padStart(2, '0')
-        + '-' + String(now.getHours()).padStart(2, '0')
-        + String(now.getMinutes()).padStart(2, '0')
-        + String(now.getSeconds()).padStart(2, '0');
-      var rand = Math.random().toString(36).substring(2, 8);
-      a.download = 'sss-' + ts + '-' + rand + '.html';
+      a.download = SSS.timestampedName('sss-') + '.html';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
