@@ -2305,7 +2305,7 @@ var qrcode = function() {
   // Render QR code to a canvas element
   QR.generate = function(data, canvas, options) {
     options = options || {};
-    var size = options.size || 256;
+    var displaySize = options.size || 256;
     // Type 0 = auto-detect version, error correction M
     var qr = qrcode(0, 'M');
     qr.addData(data);
@@ -2313,12 +2313,18 @@ var qrcode = function() {
     var moduleCount = qr.getModuleCount();
     var quietZone = options.quietZone !== undefined ? options.quietZone : 4;
     var totalModules = moduleCount + quietZone * 2;
-    var cellSize = size / totalModules;
-    canvas.width = size;
-    canvas.height = size;
+    // Use integer cell size for crisp pixels (minimum 4px per module)
+    var cellSize = Math.max(4, Math.ceil(displaySize / totalModules));
+    var actualSize = totalModules * cellSize;
+    canvas.width = actualSize;
+    canvas.height = actualSize;
+    // CSS scales it down for display; rendering stays pixel-perfect
+    canvas.style.width = displaySize + 'px';
+    canvas.style.height = displaySize + 'px';
+    canvas.style.imageRendering = 'pixelated';
     var ctx = canvas.getContext('2d');
     ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, size, size);
+    ctx.fillRect(0, 0, actualSize, actualSize);
     ctx.fillStyle = '#000000';
     for (var row = 0; row < moduleCount; row++) {
       for (var col = 0; col < moduleCount; col++) {
@@ -2326,8 +2332,8 @@ var qrcode = function() {
           ctx.fillRect(
             (col + quietZone) * cellSize,
             (row + quietZone) * cellSize,
-            cellSize + 0.5,
-            cellSize + 0.5
+            cellSize,
+            cellSize
           );
         }
       }
