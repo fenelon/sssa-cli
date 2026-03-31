@@ -875,7 +875,7 @@ footer {
     margin-top: 0;
   }
 
-  .output h2 {
+  .output-header {
     display: none;
   }
 
@@ -914,7 +914,7 @@ footer {
   }
 
   .share-label::after {
-    content: 'This is a piece of a shared secret created by SecretShards.com.\A You can recover it there if you have enough shares.';
+    content: 'This is a piece of a shared secret created by SecretShards.com.\A You can recover it there if you have enough pieces.';
     white-space: pre-line;
     display: block;
     font-size: 9px;
