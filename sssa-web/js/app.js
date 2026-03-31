@@ -205,11 +205,11 @@
       const btnPdf = document.createElement('button');
       btnPdf.className = 'btn-small share-card-print';
       btnPdf.textContent = 'Print Share ' + (idx + 1);
-      btnPdf.addEventListener('click', (function (shareIdx, shareData, shareCanvas) {
+      btnPdf.addEventListener('click', (function (shareIdx) {
         return function () {
-          saveSingleSharePDF(shareIdx + 1, total, shareData, shareCanvas);
+          printSingleShare(shareIdx);
         };
-      })(idx, share, canvas));
+      })(idx));
       card.appendChild(btnPdf);
 
       sharesList.appendChild(card);
@@ -242,46 +242,23 @@
   }
 
   // ---------------------------------------------------------------------------
-  // 6a. Save single share as PDF
+  // 6a. Print single share (reuses the same CSS print template as Print All)
   // ---------------------------------------------------------------------------
-  function saveSingleSharePDF(num, total, shareData, shareCanvas) {
-    const qrDataURL = shareCanvas.toDataURL('image/png');
-    const title = SSS.timestampedName('sss-share-' + num + 'of' + total + '-');
+  function printSingleShare(index) {
+    const cards = sharesList.querySelectorAll('.share-card');
+    cards.forEach(function (c, i) {
+      if (i !== index) c.classList.add('print-hidden');
+      else c.classList.add('print-single');
+    });
 
-    const w = window.open('', '_blank');
-    if (!w) {
-      showInlineError(splitError, 'Popup blocked — please allow popups to print individual shares.');
-      return;
-    }
+    const originalTitle = document.title;
+    document.title = SSS.timestampedName('sss-share-' + (index + 1) + 'of' + cards.length + '-');
+    window.print();
+    document.title = originalTitle;
 
-    const doc = w.document;
-    doc.open();
-    doc.write('<!DOCTYPE html><html><head><meta charset="utf-8">');
-    doc.write('<title>' + title + '</title>');
-    doc.write('<style>');
-    doc.write('body { margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; font-family: "Helvetica Neue", Helvetica, sans-serif; }');
-    doc.write('.label { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: #555; margin-bottom: 12px; }');
-    doc.write('img { width: 6cm; height: 6cm; image-rendering: pixelated; }');
-    doc.write('.text { font-family: "Courier New", Courier, monospace; font-size: 10px; color: #333; word-break: break-all; max-width: 7.5cm; text-align: center; line-height: 1.4; margin-top: 12px; }');
-    doc.write('</style></head><body>');
-    doc.write('<div class="label"></div>');
-    doc.write('<img>');
-    doc.write('<div class="text"></div>');
-    doc.write('</body></html>');
-    doc.close();
-
-    // Set content via DOM to avoid XSS from share data
-    doc.querySelector('.label').textContent = 'Share ' + num + ' of ' + total;
-    doc.querySelector('img').src = qrDataURL;
-    doc.querySelector('.text').textContent = shareData;
-
-    // Wait for image to load, then print
-    doc.querySelector('img').onload = function () {
-      w.focus();
-      w.print();
-    };
-    w.addEventListener('afterprint', function () {
-      w.close();
+    cards.forEach(function (c) {
+      c.classList.remove('print-hidden');
+      c.classList.remove('print-single');
     });
   }
 

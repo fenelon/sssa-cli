@@ -900,7 +900,8 @@ footer {
     text-align: center;
   }
 
-  .share-card:last-child {
+  .share-card:last-child,
+  .share-card.print-single {
     page-break-after: avoid;
     break-after: avoid;
   }
@@ -915,7 +916,7 @@ footer {
   }
 
   .share-label::after {
-    content: 'This is a piece of a shared secret created by SecretShards.com.\A You can recover it there if you have enough pieces.';
+    content: 'This is a piece of a shared secret created by SecretShards.com.\A You can recover it there if you have enough pieces (shares).';
     white-space: pre-line;
     display: block;
     font-size: 9px;
@@ -953,7 +954,8 @@ footer {
 
   .copied-tooltip,
   .qr-size-warning,
-  .share-card-print {
+  .share-card-print,
+  .print-hidden {
     display: none !important;
   }
 }
