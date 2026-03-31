@@ -1,7 +1,7 @@
 /**
  * app.js — UI logic for the Shamir Secret Sharing web app.
  *
- * Wires up all interactions: mode toggle, split, combine, share slots,
+ * Wires up all interactions: mode toggle, split, combine cards,
  * validation, copy, and print.
  *
  * SECURITY: Never uses innerHTML. All DOM construction uses createElement,
@@ -363,7 +363,7 @@
       });
 
       actions.appendChild(btnUpload);
-      addCard.appendChild(fileInput);
+      actions.appendChild(fileInput);
     }
 
     // Paste Text button
