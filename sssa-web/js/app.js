@@ -336,7 +336,7 @@
     if (SSS.Scanner.hasBarcodeDetector) {
       var btnUpload = document.createElement('button');
       btnUpload.className = 'btn-secondary';
-      btnUpload.textContent = 'Upload QR Code Image';
+      btnUpload.textContent = 'Upload QR Image';
 
       var fileInput = document.createElement('input');
       fileInput.type = 'file';
@@ -347,7 +347,7 @@
         var file = fileInput.files[0];
         if (!file) return;
         SSS.Scanner.scanImage(file).then(function (text) {
-          if (SSS.isValidShare(text)) {
+          if (SSS.isValidShare(text) && !isDuplicateShare(text)) {
             createFilledCard(text);
           } else {
             showPasteMode(text);
@@ -407,12 +407,14 @@
       var val = textInput.value.trim();
       if (val === '') {
         errorMsg.setAttribute('hidden', '');
-      } else if (SSS.isValidShare(val)) {
-        errorMsg.setAttribute('hidden', '');
-        createFilledCard(val);
-        resetAddCard();
-      } else {
+      } else if (!SSS.isValidShare(val)) {
         errorMsg.textContent = 'Invalid share format';
+        errorMsg.removeAttribute('hidden');
+      } else if (isDuplicateShare(val)) {
+        errorMsg.textContent = 'Duplicate share';
+        errorMsg.removeAttribute('hidden');
+      } else {
+        errorMsg.setAttribute('hidden', '');
         errorMsg.removeAttribute('hidden');
       }
     });
@@ -467,6 +469,17 @@
   }
 
   /**
+   * Returns true if a share with the same data already exists.
+   */
+  function isDuplicateShare(shareData) {
+    var cards = shareInputs.querySelectorAll('.combine-card-filled');
+    for (var i = 0; i < cards.length; i++) {
+      if (cards[i].dataset.share === shareData) return true;
+    }
+    return false;
+  }
+
+  /**
    * Returns an array of share strings from filled cards.
    */
   function getValidShares() {
@@ -497,7 +510,7 @@
       cameraController = SSS.Scanner.startCamera(cameraVideo, function (text) {
         var callback = activeCameraSlot && activeCameraSlot.callback;
         closeCamera();
-        if (callback && SSS.isValidShare(text)) {
+        if (callback && SSS.isValidShare(text) && !isDuplicateShare(text)) {
           callback(text);
         }
       });
