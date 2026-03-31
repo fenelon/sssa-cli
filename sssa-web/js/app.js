@@ -347,10 +347,12 @@
         var file = fileInput.files[0];
         if (!file) return;
         SSS.Scanner.scanImage(file).then(function (text) {
-          if (SSS.isValidShare(text) && !isDuplicateShare(text)) {
-            createFilledCard(text);
-          } else {
+          if (!SSS.isValidShare(text)) {
             showPasteMode(text);
+          } else if (isDuplicateShare(text)) {
+            showAddCardError('Duplicate share');
+          } else {
+            createFilledCard(text);
           }
         }).catch(function (err) {
           alert('Could not read QR code from image: ' + err.message);
@@ -480,6 +482,29 @@
   }
 
   /**
+   * Shows a temporary error message on the Add Share card without changing its mode.
+   */
+  function showAddCardError(message) {
+    var addCard = shareInputs.querySelector('.combine-card-add');
+    if (!addCard) return;
+
+    // Remove any existing error
+    var existing = addCard.querySelector('.combine-card-error');
+    if (existing) existing.parentNode.removeChild(existing);
+
+    var errorMsg = document.createElement('div');
+    errorMsg.className = 'combine-card-error';
+    errorMsg.textContent = message;
+    addCard.appendChild(errorMsg);
+
+    setTimeout(function () {
+      if (errorMsg.parentNode) {
+        errorMsg.parentNode.removeChild(errorMsg);
+      }
+    }, 3000);
+  }
+
+  /**
    * Returns an array of share strings from filled cards.
    */
   function getValidShares() {
@@ -512,7 +537,7 @@
         closeCamera();
         if (callback && SSS.isValidShare(text)) {
           if (isDuplicateShare(text)) {
-            showPasteMode(text);
+            showAddCardError('Duplicate share');
           } else {
             callback(text);
           }
