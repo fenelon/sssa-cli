@@ -64,25 +64,28 @@
     var bytes = new TextEncoder().encode(secret).length;
     byteCount.textContent = bytes;
 
-    // over-limit class on the byte-counter container
+    var qrWarning = document.getElementById('qr-warning');
+    var overLimitMsg = document.getElementById('over-limit-msg');
+
     if (bytes > 512) {
       byteCounter.classList.add('over-limit');
+      overLimitMsg.removeAttribute('hidden');
+      qrWarning.setAttribute('hidden', '');
     } else {
       byteCounter.classList.remove('over-limit');
-    }
-
-    // Show warning if QR share size would exceed 700 chars
-    var qrWarning = document.getElementById('qr-warning');
-    if (bytes > 0) {
-      var chunks = Math.ceil(bytes / 32);
-      var shareLen = chunks * 88;
-      if (shareLen > 700) {
-        qrWarning.removeAttribute('hidden');
+      overLimitMsg.setAttribute('hidden', '');
+      // Show QR warning only when under limit but shares would be large
+      if (bytes > 0) {
+        var chunks = Math.ceil(bytes / 32);
+        var shareLen = chunks * 88;
+        if (shareLen > 700) {
+          qrWarning.removeAttribute('hidden');
+        } else {
+          qrWarning.setAttribute('hidden', '');
+        }
       } else {
         qrWarning.setAttribute('hidden', '');
       }
-    } else {
-      qrWarning.setAttribute('hidden', '');
     }
 
     validateSplit();
