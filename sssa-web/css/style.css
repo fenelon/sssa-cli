@@ -697,10 +697,9 @@ footer p {
     margin-bottom: 8px;
   }
 
-  /* Minimum QR size 3cm */
   .share-qr canvas {
-    min-width: 3cm;
-    min-height: 3cm;
+    width: 6cm;
+    height: 6cm;
     image-rendering: pixelated;
   }
 
@@ -709,7 +708,7 @@ footer p {
     font-size: 10px;
     color: #333;
     word-break: break-all;
-    max-width: 3.75cm; /* ≤125% of QR code min-width (3cm) */
+    max-width: 7.5cm; /* ≤125% of QR code width (6cm) */
     text-align: center;
     cursor: default;
     line-height: 1.4;

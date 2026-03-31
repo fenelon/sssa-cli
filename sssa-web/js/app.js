@@ -231,9 +231,9 @@
     doc.write('<title>' + title + '</title>');
     doc.write('<style>');
     doc.write('body { margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; font-family: "Helvetica Neue", Helvetica, sans-serif; }');
-    doc.write('.label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: #555; margin-bottom: 8px; }');
-    doc.write('img { width: 3cm; height: 3cm; image-rendering: pixelated; }');
-    doc.write('.text { font-family: "Courier New", Courier, monospace; font-size: 10px; color: #333; word-break: break-all; max-width: 3.75cm; text-align: center; line-height: 1.4; margin-top: 8px; }');
+    doc.write('.label { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: #555; margin-bottom: 12px; }');
+    doc.write('img { width: 6cm; height: 6cm; image-rendering: pixelated; }');
+    doc.write('.text { font-family: "Courier New", Courier, monospace; font-size: 10px; color: #333; word-break: break-all; max-width: 7.5cm; text-align: center; line-height: 1.4; margin-top: 12px; }');
     doc.write('</style></head><body>');
     doc.write('<div class="label"></div>');
     doc.write('<img>');
