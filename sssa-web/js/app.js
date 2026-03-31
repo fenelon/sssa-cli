@@ -377,11 +377,11 @@
     cameraModal.removeAttribute('hidden');
     try {
       cameraController = SSS.Scanner.startCamera(cameraVideo, function (text) {
+        var slot = activeCameraSlot;
         closeCamera();
-        if (activeCameraSlot) {
-          activeCameraSlot.input.value = text;
-          activeCameraSlot.input.dispatchEvent(new Event('input'));
-          activeCameraSlot = null;
+        if (slot) {
+          slot.input.value = text;
+          slot.input.dispatchEvent(new Event('input'));
         }
       });
     } catch (err) {
