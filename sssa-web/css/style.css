@@ -248,9 +248,12 @@ textarea[readonly] {
   font-weight: 700;
 }
 
-.byte-counter.warning {
-  color: #e06000;
-  font-weight: 600;
+/* QR size warning under secret input */
+.qr-size-warning {
+  font-size: 0.75rem;
+  color: #b35900;
+  margin-top: 0.375rem;
+  font-style: italic;
 }
 
 /* ============================================================
@@ -386,9 +389,16 @@ button {
    ============================================================ */
 
 .share-card {
+  position: relative;
   border: 1px solid var(--color-light-border);
   padding: 20px;
   margin-bottom: 16px;
+}
+
+.share-card-print {
+  position: absolute;
+  top: 12px;
+  right: 12px;
 }
 
 .share-label {
@@ -698,8 +708,8 @@ footer p {
   }
 
   .share-qr canvas {
-    width: 6cm;
-    height: 6cm;
+    width: 7cm;
+    height: 7cm;
     image-rendering: pixelated;
   }
 
@@ -708,7 +718,7 @@ footer p {
     font-size: 10px;
     color: #333;
     word-break: break-all;
-    max-width: 7.5cm; /* ≤125% of QR code width (6cm) */
+    max-width: 9cm; /* ≤125% of QR code width (6cm) */
     text-align: center;
     cursor: default;
     line-height: 1.4;
@@ -716,6 +726,8 @@ footer p {
 
   .copied-tooltip,
   .qr-warning,
+  .qr-size-warning,
+  .share-card-print,
   .share-slot-actions {
     display: none !important;
   }

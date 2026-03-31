@@ -71,14 +71,18 @@
       byteCounter.classList.remove('over-limit');
     }
 
-    // warning class if QR share size would exceed 700 chars
-    // share length = chunks * 88, where chunks = ceil(bytes / 32)
-    var chunks = Math.ceil(bytes / 32) || 1;
-    var shareLen = chunks * 88;
-    if (shareLen > 700) {
-      byteCounter.classList.add('warning');
+    // Show warning if QR share size would exceed 700 chars
+    var qrWarning = document.getElementById('qr-warning');
+    if (bytes > 0) {
+      var chunks = Math.ceil(bytes / 32);
+      var shareLen = chunks * 88;
+      if (shareLen > 700) {
+        qrWarning.removeAttribute('hidden');
+      } else {
+        qrWarning.setAttribute('hidden', '');
+      }
     } else {
-      byteCounter.classList.remove('warning');
+      qrWarning.setAttribute('hidden', '');
     }
 
     validateSplit();
@@ -163,18 +167,10 @@
       });
       card.appendChild(shareText);
 
-      // QR warning if share is too long for reliable scanning
-      if (share.length > 700) {
-        var warn = document.createElement('span');
-        warn.className = 'qr-warning';
-        warn.textContent = 'Share is large — QR code may be hard to scan';
-        card.appendChild(warn);
-      }
-
-      // Save as PDF button
+      // Print single share button
       var btnPdf = document.createElement('button');
-      btnPdf.className = 'btn-small';
-      btnPdf.textContent = 'Save PDF';
+      btnPdf.className = 'btn-small share-card-print';
+      btnPdf.textContent = 'Print Share ' + (idx + 1);
       btnPdf.addEventListener('click', (function (shareIdx, shareData, shareCanvas) {
         return function () {
           saveSingleSharePDF(shareIdx + 1, total, shareData, shareCanvas);
@@ -515,5 +511,15 @@
       }
     });
   }
+
+  // ---------------------------------------------------------------------------
+  // 11. Warn before closing if shares are visible
+  // ---------------------------------------------------------------------------
+  window.addEventListener('beforeunload', function (e) {
+    if (!splitOutput.hasAttribute('hidden')) {
+      e.preventDefault();
+      return '';
+    }
+  });
 
 })();
