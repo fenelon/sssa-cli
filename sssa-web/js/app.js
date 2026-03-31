@@ -23,6 +23,7 @@
   const byteCount      = document.getElementById('byte-count');
   const byteCounter    = document.querySelector('.byte-counter');
   const btnSplit       = document.getElementById('btn-split');
+  const btnClear       = document.getElementById('btn-clear');
   const btnPrint       = document.getElementById('btn-print');
   const splitOutput    = document.getElementById('split-output');
   const sharesList     = document.getElementById('shares-list');
@@ -215,6 +216,14 @@
     });
 
     splitOutput.removeAttribute('hidden');
+    btnClear.removeAttribute('hidden');
+  });
+
+  // ---------------------------------------------------------------------------
+  // 5a. Clear all
+  // ---------------------------------------------------------------------------
+  btnClear.addEventListener('click', function () {
+    location.reload();
   });
 
   /**
