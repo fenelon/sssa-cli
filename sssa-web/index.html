@@ -3,21 +3,26 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Shamir's Secret Sharing</title>
+  <title>SecretShards — Split secrets with Shamir's algorithm</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <!-- Download banner (hosted version only) -->
   <div id="download-banner" class="download-banner">
     <div class="download-banner-inner">
-      For maximum security, <a href="#" id="download-link">download and run offline</a>
+      <strong>For sensitive secrets, <a href="#" id="download-link">download and run offline</a>.</strong>
+      This app runs entirely in your browser — nothing is sent to any server.
+      For additional peace of mind, download a self-contained copy and run it without an internet connection.
+      Note that QR scanning is unavailable in offline mode due to browser security restrictions.
+      Keep in mind that a secret like a PIN or password is often just one layer of security — knowing
+      a PIN doesn't automatically grant access to someone's credit card.
+      See the <a href="#about">examples below</a> for best practices and use cases.
     </div>
   </div>
 
   <main>
     <header>
-      <div class="accent-bar"></div>
-      <h1>Secret Sharing</h1>
+      <h1 class="logo"><span class="logo-secret">Secret</span><span class="logo-shards">Shards</span><span class="logo-shard">&#9650;</span></h1>
       <p class="subtitle">Split secrets with Shamir's algorithm. Recover with a threshold of shares.</p>
     </header>
 
@@ -79,8 +84,32 @@
       </div>
     </section>
 
-    <footer>
-      <p>Shamir's Secret Sharing splits a secret into N shares, of which any M are sufficient to reconstruct the original. Fewer than M shares reveal nothing about the secret.</p>
+    <footer id="about">
+      <section class="footer-description">
+        <h2>What is Secret Sharing?</h2>
+        <p>Secret sharing lets you split sensitive information into multiple parts called "shares." You choose how many shares to create and how many are needed to recover the original — for example, split into 5 shares where any 3 can reconstruct the secret. This uses Shamir's Secret Sharing, a proven cryptographic algorithm trusted since 1979. No single share is useful on its own — only the right combination can recover your secret.</p>
+        <p>SecretShards is built to last. It has zero external dependencies — just plain HTML, CSS, and JavaScript with no frameworks, no build tools, and no CDN links that could go offline. The only vendored library is a QR code generator. Download a copy today and it will work exactly the same in 50 years — even if this domain goes down.</p>
+
+        <h3>When to use it</h3>
+        <ul class="use-cases">
+          <li><strong>Personal security</strong> — Split a password manager master password among family members, so no single person holds the full key but the family can recover access if needed.</li>
+          <li><strong>Cryptocurrency</strong> — Back up a wallet seed phrase or private key. Store shares in separate locations so a single break-in or lost device doesn't mean lost funds.</li>
+          <li><strong>Business continuity</strong> — Distribute access to critical systems among team leads. If someone leaves or is unavailable, the remaining team can still recover access.</li>
+          <li><strong>Estate planning</strong> — Include shares of important passwords or PINs in documents held by different trusted parties, ensuring access passes on without exposing secrets prematurely.</li>
+          <li><strong>Secure backup</strong> — Split any sensitive text — API keys, recovery codes, encryption passphrases — and store the shares in different places: a safe, a cloud drive, a trusted friend.</li>
+        </ul>
+      </section>
+
+      <div class="privacy-badge">
+        <div class="accent-bar"></div>
+        <p><strong>No tracking. No analytics. No data collection.</strong></p>
+        <p>Your secrets never leave your browser. This app has no server-side component, no cookies, and no third-party scripts.</p>
+      </div>
+
+      <div class="footer-bottom">
+        <p class="copyright">&copy; 2026 <a href="https://secretshards.com">SecretShards.com</a> by <a href="https://ellin.co">Ellin Pino</a></p>
+        <p class="attribution">QR code generation by Kazuhiko Arase (MIT license)</p>
+      </div>
     </footer>
   </main>
 

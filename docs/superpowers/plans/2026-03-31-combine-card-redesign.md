@@ -318,7 +318,7 @@ Replace with:
     if (SSS.Scanner.hasBarcodeDetector) {
       var btnUpload = document.createElement('button');
       btnUpload.className = 'btn-secondary';
-      btnUpload.textContent = 'Upload QR Code Image';
+      btnUpload.textContent = 'Upload QR Image';
 
       var fileInput = document.createElement('input');
       fileInput.type = 'file';
