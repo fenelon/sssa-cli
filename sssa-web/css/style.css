@@ -106,6 +106,29 @@ h1 {
   line-height: 1.2;
 }
 
+.logo {
+  font-weight: 700;
+  letter-spacing: -1px;
+  font-size: 36px;
+}
+
+.logo-secret {
+  color: var(--color-text-heading);
+}
+
+.logo-shards {
+  color: var(--color-accent);
+}
+
+.logo-shard {
+  color: var(--color-accent);
+  font-size: 14px;
+  vertical-align: super;
+  margin-left: 2px;
+  display: inline-block;
+  transform: rotate(25deg) translateY(-6px);
+}
+
 .subtitle {
   font-size: 14px;
   color: var(--color-secondary);
@@ -597,6 +620,15 @@ button {
   align-self: flex-start;
 }
 
+@keyframes combine-card-blink {
+  0%, 100% { border-color: var(--color-light-border); }
+  25%, 75% { border-color: var(--color-accent); }
+}
+
+.combine-card-blink {
+  animation: combine-card-blink 0.5s ease 3;
+}
+
 /* ============================================================
    Recovered Secret
    ============================================================ */
@@ -691,13 +723,13 @@ footer {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: var(--color-secondary);
+  color: var(--color-dim);
   margin-bottom: 16px;
 }
 
 .footer-description p {
   font-size: 14px;
-  color: var(--color-secondary);
+  color: var(--color-dim);
   line-height: 1.7;
   margin-bottom: 24px;
 }
@@ -707,7 +739,7 @@ footer {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--color-secondary);
+  color: var(--color-dim);
   margin-bottom: 12px;
 }
 
@@ -719,7 +751,7 @@ footer {
 
 .use-cases li {
   font-size: 13px;
-  color: var(--color-secondary);
+  color: var(--color-dim);
   line-height: 1.7;
   padding: 8px 0;
   border-bottom: 1px solid var(--color-light-border);
@@ -730,7 +762,7 @@ footer {
 }
 
 .use-cases li strong {
-  color: var(--color-text);
+  color: var(--color-secondary);
 }
 
 /* Privacy badge */

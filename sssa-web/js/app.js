@@ -349,10 +349,13 @@
         SSS.Scanner.scanImage(file).then(function (text) {
           if (!SSS.isValidShare(text)) {
             showPasteMode(text);
-          } else if (isDuplicateShare(text)) {
-            showAddCardError('Duplicate share');
           } else {
-            createFilledCard(text);
+            var dupCard = findDuplicateCard(text);
+            if (dupCard) {
+              highlightDuplicate(dupCard);
+            } else {
+              createFilledCard(text);
+            }
           }
         }).catch(function (err) {
           alert('Could not read QR code from image: ' + err.message);
@@ -412,10 +415,14 @@
       } else if (!SSS.isValidShare(val)) {
         errorMsg.textContent = 'Invalid share format';
         errorMsg.removeAttribute('hidden');
-      } else if (isDuplicateShare(val)) {
-        errorMsg.textContent = 'Duplicate share';
-        errorMsg.removeAttribute('hidden');
       } else {
+        var dupCard = findDuplicateCard(val);
+        if (dupCard) {
+          errorMsg.textContent = 'Duplicate share';
+          errorMsg.removeAttribute('hidden');
+          highlightDuplicate(dupCard);
+          return;
+        }
         errorMsg.setAttribute('hidden', '');
         errorMsg.removeAttribute('hidden');
       }
@@ -471,32 +478,36 @@
   }
 
   /**
-   * Returns true if a share with the same data already exists.
+   * Returns the filled card element if a share with the same data exists, or null.
    */
-  function isDuplicateShare(shareData) {
+  function findDuplicateCard(shareData) {
     var cards = shareInputs.querySelectorAll('.combine-card-filled');
     for (var i = 0; i < cards.length; i++) {
-      if (cards[i].dataset.share === shareData) return true;
+      if (cards[i].dataset.share === shareData) return cards[i];
     }
-    return false;
+    return null;
   }
 
   /**
-   * Shows a temporary error message on the Add Share card without changing its mode.
+   * Highlights the duplicate card with a blink animation and error message.
    */
-  function showAddCardError(message) {
-    var addCard = shareInputs.querySelector('.combine-card-add');
-    if (!addCard) return;
-
-    // Remove any existing error
-    var existing = addCard.querySelector('.combine-card-error');
+  function highlightDuplicate(card) {
+    // Remove any existing duplicate error on this card
+    var existing = card.querySelector('.combine-card-error');
     if (existing) existing.parentNode.removeChild(existing);
 
     var errorMsg = document.createElement('div');
     errorMsg.className = 'combine-card-error';
-    errorMsg.textContent = message;
-    addCard.appendChild(errorMsg);
+    errorMsg.textContent = 'Duplicate share';
+    card.appendChild(errorMsg);
 
+    // Blink the card
+    card.classList.add('combine-card-blink');
+    setTimeout(function () {
+      card.classList.remove('combine-card-blink');
+    }, 1500);
+
+    // Remove error after 3 seconds
     setTimeout(function () {
       if (errorMsg.parentNode) {
         errorMsg.parentNode.removeChild(errorMsg);
@@ -536,8 +547,9 @@
         var callback = activeCameraSlot && activeCameraSlot.callback;
         closeCamera();
         if (callback && SSS.isValidShare(text)) {
-          if (isDuplicateShare(text)) {
-            showAddCardError('Duplicate share');
+          var dupCard = findDuplicateCard(text);
+          if (dupCard) {
+            highlightDuplicate(dupCard);
           } else {
             callback(text);
           }
