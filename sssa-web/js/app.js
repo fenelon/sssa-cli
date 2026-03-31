@@ -510,8 +510,12 @@
       cameraController = SSS.Scanner.startCamera(cameraVideo, function (text) {
         var callback = activeCameraSlot && activeCameraSlot.callback;
         closeCamera();
-        if (callback && SSS.isValidShare(text) && !isDuplicateShare(text)) {
-          callback(text);
+        if (callback && SSS.isValidShare(text)) {
+          if (isDuplicateShare(text)) {
+            showPasteMode(text);
+          } else {
+            callback(text);
+          }
         }
       });
     } catch (err) {
