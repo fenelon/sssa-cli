@@ -706,12 +706,13 @@ footer p {
 
   .share-text {
     font-family: 'Courier New', Courier, monospace;
-    font-size: 10px;
+    font-size: 8px;
     color: #333;
     word-break: break-all;
-    max-width: 80%;
+    max-width: 3.75cm; /* ≤125% of QR code min-width (3cm) */
     text-align: center;
     cursor: default;
+    line-height: 1.4;
   }
 
   .copied-tooltip,
