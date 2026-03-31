@@ -871,11 +871,14 @@ footer {
     margin: 0;
     page-break-after: always;
     break-after: page;
+    page-break-inside: avoid;
+    break-inside: avoid;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
+    height: 100vh;
+    box-sizing: border-box;
     text-align: center;
   }
 
