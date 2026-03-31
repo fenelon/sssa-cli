@@ -690,11 +690,11 @@ footer p {
     text-transform: uppercase;
     letter-spacing: 0.12em;
     color: #555;
-    margin-bottom: 24px;
+    margin-bottom: 8px;
   }
 
   .share-qr {
-    margin-bottom: 24px;
+    margin-bottom: 8px;
   }
 
   /* Minimum QR size 3cm */
@@ -706,7 +706,7 @@ footer p {
 
   .share-text {
     font-family: 'Courier New', Courier, monospace;
-    font-size: 8px;
+    font-size: 10px;
     color: #333;
     word-break: break-all;
     max-width: 3.75cm; /* ≤125% of QR code min-width (3cm) */
