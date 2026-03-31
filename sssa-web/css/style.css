@@ -1,15 +1,20 @@
 /* ============================================================
-   Swiss / International Typographic Style
+   Dark Swiss / International Typographic Style
    Shamir's Secret Sharing — Web UI
    ============================================================ */
 
 :root {
-  --color-bg: #ffffff;
-  --color-text: #111111;
+  --color-bg: #0a0a0a;
+  --color-surface: #111111;
+  --color-input: #0f0f0f;
+  --color-raised: #1a1a1a;
+  --color-text: #e0e0e0;
+  --color-text-heading: #ffffff;
   --color-accent: #e00000;
-  --color-secondary: #999999;
-  --color-border: #111111;
-  --color-light-border: #e0e0e0;
+  --color-secondary: #555555;
+  --color-border: #2a2a2a;
+  --color-light-border: #222222;
+  --color-dim: #333333;
   --font-stack: 'Helvetica Neue', Helvetica, sans-serif;
   --max-width: 640px;
 }
@@ -54,8 +59,8 @@ main {
    ============================================================ */
 
 .download-banner {
-  background-color: #f5f5f5;
-  border-bottom: 1px solid var(--color-light-border);
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-raised);
   padding: 8px 24px;
   text-align: center;
 }
@@ -95,7 +100,7 @@ h1 {
   font-size: 32px;
   font-weight: 300;
   letter-spacing: -0.5px;
-  color: var(--color-text);
+  color: var(--color-text-heading);
   margin-bottom: 8px;
   line-height: 1.2;
 }
@@ -115,7 +120,7 @@ h1 {
   flex-direction: row;
   gap: 24px;
   margin-bottom: 40px;
-  border-bottom: 1px solid var(--color-light-border);
+  border-bottom: 1px solid var(--color-raised);
   padding-bottom: 12px;
 }
 
@@ -136,8 +141,8 @@ h1 {
 }
 
 .mode-link.active {
-  color: var(--color-text);
-  border-bottom-color: var(--color-text);
+  color: var(--color-text-heading);
+  border-bottom-color: var(--color-accent);
 }
 
 /* ============================================================
@@ -169,17 +174,19 @@ h1 {
 }
 
 .threshold-input {
-  width: 64px;
+  width: 56px;
+  height: 40px;
   font-family: var(--font-stack);
-  font-size: 20px;
-  font-weight: 400;
+  font-size: 18px;
+  font-weight: 500;
   text-align: center;
   color: var(--color-text);
-  background: transparent;
-  border: none;
-  border-bottom: 2px solid var(--color-border);
+  background: var(--color-input);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
   padding: 4px 0;
   outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
   -moz-appearance: textfield;
   appearance: textfield;
 }
@@ -191,7 +198,8 @@ h1 {
 }
 
 .threshold-input:focus {
-  border-bottom-color: var(--color-accent);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 1px rgba(224, 0, 0, 0.15);
 }
 
 .threshold-of {
@@ -210,26 +218,33 @@ textarea {
   font-family: var(--font-stack);
   font-size: 14px;
   color: var(--color-text);
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid var(--color-border);
-  padding: 8px 0;
+  background: var(--color-input);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 10px 12px;
   resize: vertical;
   outline: none;
   line-height: 1.6;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 textarea:focus {
-  border-bottom-color: var(--color-accent);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 1px rgba(224, 0, 0, 0.15);
 }
 
 textarea::placeholder {
-  color: var(--color-secondary);
+  color: #444444;
 }
 
 textarea[readonly] {
   cursor: default;
-  border-bottom-color: var(--color-light-border);
+  border-color: var(--color-light-border);
+}
+
+textarea[readonly]:focus {
+  border-color: var(--color-light-border);
+  box-shadow: none;
 }
 
 /* ============================================================
@@ -239,7 +254,7 @@ textarea[readonly] {
 .byte-counter {
   text-align: right;
   font-size: 11px;
-  color: var(--color-secondary);
+  color: var(--color-dim);
   margin-top: 6px;
 }
 
@@ -290,19 +305,18 @@ button {
 
 .btn-primary {
   display: inline-block;
-  background-color: var(--color-text);
-  color: var(--color-bg);
+  background-color: var(--color-accent);
+  color: #ffffff;
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   padding: 12px 24px;
-  border: 2px solid var(--color-text);
+  border: none;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background-color: var(--color-accent);
-  border-color: var(--color-accent);
+  background-color: #ff1a1a;
 }
 
 .btn-primary:disabled {
@@ -313,18 +327,18 @@ button {
 .btn-secondary {
   display: inline-block;
   background-color: transparent;
-  color: var(--color-text);
+  color: #cccccc;
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   padding: 12px 24px;
-  border: 2px solid var(--color-border);
+  border: 1px solid var(--color-dim);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background-color: var(--color-text);
-  color: var(--color-bg);
+  border-color: #888888;
+  color: #ffffff;
 }
 
 .btn-secondary:disabled {
@@ -341,12 +355,12 @@ button {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   padding: 6px 12px;
-  border: 1px solid var(--color-light-border);
+  border: 1px solid var(--color-border);
 }
 
 .btn-small:hover:not(:disabled) {
-  color: var(--color-text);
-  border-color: var(--color-text);
+  color: #cccccc;
+  border-color: var(--color-secondary);
 }
 
 .btn-close {
@@ -398,7 +412,9 @@ button {
 
 .share-card {
   position: relative;
+  background: var(--color-surface);
   border: 1px solid var(--color-light-border);
+  border-radius: 6px;
   padding: 20px;
   margin-bottom: 16px;
 }
@@ -430,15 +446,16 @@ button {
 .share-text {
   font-family: 'Courier New', Courier, monospace;
   font-size: 11px;
-  color: var(--color-secondary);
+  color: var(--color-accent);
   word-break: break-all;
   cursor: pointer;
   line-height: 1.6;
   position: relative;
+  opacity: 0.8;
 }
 
 .share-text:hover {
-  color: var(--color-text);
+  opacity: 1;
 }
 
 .copied-tooltip {
@@ -465,52 +482,84 @@ button {
 }
 
 /* ============================================================
-   Share Slots (Combine mode)
+   Combine Cards (Combine mode)
    ============================================================ */
 
-.share-slot {
-  border: 1px solid var(--color-light-border);
-  margin-bottom: 16px;
-}
-
-.share-slot-header {
+.combine-card-grid {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 16px;
-  border-bottom: 1px solid var(--color-light-border);
+  flex-wrap: wrap;
+  gap: 16px;
 }
 
-.share-slot-label {
+.combine-card {
+  width: 240px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.combine-card-filled {
+  border: 1px solid var(--color-light-border);
+  position: relative;
+}
+
+.combine-card-add {
+  border: 2px dashed var(--color-light-border);
+  align-items: center;
+  justify-content: center;
+}
+
+.combine-card-label {
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--color-secondary);
+  margin-bottom: 12px;
 }
 
-.share-slot-status {
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+.combine-card-add .combine-card-label {
+  text-align: center;
+}
+
+.combine-card-preview {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+  color: #333;
+  word-break: break-all;
+  line-height: 1.5;
+  flex: 1;
+}
+
+.combine-card-remove {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: none;
+  border: none;
   color: var(--color-secondary);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
 }
 
-.share-slot-status.valid {
-  color: #008000;
+.combine-card-remove:hover {
+  color: var(--color-text);
 }
 
-.share-slot-status.invalid {
-  color: var(--color-accent);
+.combine-card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
 }
 
-.share-slot-body {
-  padding: 12px 16px;
+.combine-card-actions button {
+  white-space: nowrap;
 }
 
-.share-slot-input {
+.combine-card-input {
   display: block;
   width: 100%;
   font-family: 'Courier New', Courier, monospace;
@@ -523,21 +572,25 @@ button {
   outline: none;
 }
 
-.share-slot-input:focus {
+.combine-card-input:focus {
   border-bottom-color: var(--color-accent);
 }
 
-.share-slot-input::placeholder {
+.combine-card-input::placeholder {
   color: var(--color-secondary);
   font-family: var(--font-stack);
   font-size: 12px;
 }
 
-.share-slot-actions {
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-  margin-top: 10px;
+.combine-card-error {
+  font-size: 11px;
+  color: var(--color-accent);
+  margin-top: 6px;
+}
+
+.combine-card-paste-back {
+  margin-top: 8px;
+  align-self: flex-start;
 }
 
 /* ============================================================
@@ -552,8 +605,9 @@ button {
 }
 
 .recovered-secret textarea {
+  background: var(--color-input);
   border: 1px solid var(--color-light-border);
-  border-bottom: 1px solid var(--color-light-border);
+  border-radius: 4px;
   padding: 12px;
   font-family: var(--font-stack);
   font-size: 14px;
@@ -561,6 +615,7 @@ button {
 
 .recovered-secret textarea:focus {
   border-color: var(--color-light-border);
+  box-shadow: none;
 }
 
 .hint {
@@ -577,7 +632,7 @@ button {
 .modal {
   position: fixed;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.75);
+  background-color: rgba(0, 0, 0, 0.85);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -589,7 +644,7 @@ button {
 }
 
 .modal-content {
-  background-color: var(--color-bg);
+  background-color: var(--color-surface);
   width: 100%;
   max-width: 480px;
   margin: 0 20px;
@@ -601,7 +656,7 @@ button {
   align-items: center;
   justify-content: space-between;
   padding: 14px 16px;
-  border-bottom: 1px solid var(--color-light-border);
+  border-bottom: 1px solid var(--color-raised);
   font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
@@ -629,7 +684,7 @@ footer {
 
 footer p {
   font-size: 12px;
-  color: var(--color-secondary);
+  color: var(--color-dim);
   line-height: 1.7;
 }
 
@@ -684,7 +739,9 @@ footer p {
 
   /* One share per page */
   .share-card {
+    background: #fff;
     border: none;
+    border-radius: 0;
     padding: 0;
     margin: 0;
     page-break-after: always;
@@ -730,6 +787,7 @@ footer p {
     text-align: center;
     cursor: default;
     line-height: 1.4;
+    opacity: 1;
   }
 
   .copied-tooltip,
