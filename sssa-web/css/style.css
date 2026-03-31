@@ -70,6 +70,7 @@ main {
   color: var(--color-secondary);
   max-width: var(--max-width);
   margin: 0 auto;
+  line-height: 1.7;
 }
 
 .download-banner-inner a {
@@ -494,6 +495,7 @@ button {
 
 .combine-card {
   width: 240px;
+  min-height: 200px;
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -683,10 +685,99 @@ footer {
   border-top: 1px solid var(--color-light-border);
 }
 
-footer p {
+.footer-description h2 {
   font-size: 12px;
-  color: var(--color-dim);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-secondary);
+  margin-bottom: 16px;
+}
+
+.footer-description p {
+  font-size: 14px;
+  color: var(--color-text);
   line-height: 1.7;
+  margin-bottom: 24px;
+}
+
+.footer-description h3 {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-secondary);
+  margin-bottom: 12px;
+}
+
+.use-cases {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 32px;
+}
+
+.use-cases li {
+  font-size: 13px;
+  color: var(--color-text);
+  line-height: 1.7;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--color-light-border);
+}
+
+.use-cases li:last-child {
+  border-bottom: none;
+}
+
+.use-cases li strong {
+  color: var(--color-text-heading);
+}
+
+/* Privacy badge */
+.privacy-badge {
+  border: 1px solid var(--color-border);
+  padding: 20px;
+  margin-bottom: 32px;
+}
+
+.privacy-badge .accent-bar {
+  margin-bottom: 12px;
+}
+
+.privacy-badge p {
+  font-size: 13px;
+  color: var(--color-text);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.privacy-badge p + p {
+  margin-top: 6px;
+  color: var(--color-secondary);
+}
+
+/* Footer bottom */
+.footer-bottom {
+  padding-top: 16px;
+}
+
+.footer-bottom .copyright {
+  font-size: 11px;
+  color: var(--color-secondary);
+  margin-bottom: 4px;
+}
+
+.footer-bottom .copyright a {
+  color: var(--color-secondary);
+  text-decoration: underline;
+}
+
+.footer-bottom .copyright a:hover {
+  color: var(--color-text);
+}
+
+.footer-bottom .attribution {
+  font-size: 11px;
+  color: var(--color-dim);
 }
 
 /* ============================================================
