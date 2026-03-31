@@ -196,7 +196,18 @@
   // 5. Print
   // ---------------------------------------------------------------------------
   btnPrint.addEventListener('click', function () {
+    var originalTitle = document.title;
+    var now = new Date();
+    var ts = now.getFullYear()
+      + String(now.getMonth() + 1).padStart(2, '0')
+      + String(now.getDate()).padStart(2, '0')
+      + '-' + String(now.getHours()).padStart(2, '0')
+      + String(now.getMinutes()).padStart(2, '0')
+      + String(now.getSeconds()).padStart(2, '0');
+    var rand = Math.random().toString(36).substring(2, 8);
+    document.title = 'sss-' + ts + '-' + rand;
     window.print();
+    document.title = originalTitle;
   });
 
   // ---------------------------------------------------------------------------
