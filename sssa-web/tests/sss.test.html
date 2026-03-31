@@ -16,8 +16,10 @@
   <h1>SSS Core Math Utilities Tests</h1>
   <div id="output"></div>
   <div id="summary"></div>
+  <canvas id="test-canvas" width="200" height="200" style="display:none"></canvas>
 
   <script src="../js/sss.js"></script>
+  <script src="../js/qr-generate.js"></script>
   <script>
     (function () {
       var passed = 0;
@@ -233,6 +235,36 @@
         succeeded512 = false;
       }
       assert(succeeded512, 'create succeeds for 512-byte secret');
+
+      // -----------------------------------------------------------------------
+      // QR code generation
+      // -----------------------------------------------------------------------
+      section('QR code generation');
+
+      var qrShare = SSS.create(2, 3, 'qr-test-secret')[0];
+      var testCanvas = document.getElementById('test-canvas');
+
+      // Render to the test canvas and verify it has non-empty image data
+      try {
+        SSS.QR.generate(qrShare, testCanvas);
+        var imgData = testCanvas.getContext('2d').getImageData(0, 0, testCanvas.width, testCanvas.height);
+        var hasNonWhite = false;
+        for (var i = 0; i < imgData.data.length; i += 4) {
+          if (imgData.data[i] === 0 && imgData.data[i + 3] === 255) { hasNonWhite = true; break; }
+        }
+        assert(hasNonWhite, 'QR.generate renders non-empty image data to canvas');
+      } catch (e) {
+        assert(false, 'QR.generate threw: ' + e.message);
+      }
+
+      // Generate a data URL and verify format
+      try {
+        var dataURL = SSS.QR.toDataURL(qrShare);
+        assert(dataURL.indexOf('data:image/png') === 0, 'QR.toDataURL returns a string starting with data:image/png');
+        assert(dataURL.length > 100, 'QR.toDataURL returns a non-trivial data URL');
+      } catch (e) {
+        assert(false, 'QR.toDataURL threw: ' + e.message);
+      }
 
       // -----------------------------------------------------------------------
       summary();
