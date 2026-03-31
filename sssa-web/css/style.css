@@ -1,0 +1,722 @@
+/* ============================================================
+   Swiss / International Typographic Style
+   Shamir's Secret Sharing — Web UI
+   ============================================================ */
+
+:root {
+  --color-bg: #ffffff;
+  --color-text: #111111;
+  --color-accent: #e00000;
+  --color-secondary: #999999;
+  --color-border: #111111;
+  --color-light-border: #e0e0e0;
+  --font-stack: 'Helvetica Neue', Helvetica, sans-serif;
+  --max-width: 640px;
+}
+
+/* ============================================================
+   Reset & Base
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-stack);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* ============================================================
+   Layout — centered column
+   ============================================================ */
+
+main {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+/* ============================================================
+   Download Banner
+   ============================================================ */
+
+.download-banner {
+  background-color: #f5f5f5;
+  border-bottom: 1px solid var(--color-light-border);
+  padding: 8px 24px;
+  text-align: center;
+}
+
+.download-banner-inner {
+  font-size: 12px;
+  color: var(--color-secondary);
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.download-banner-inner a {
+  color: var(--color-secondary);
+  text-decoration: underline;
+}
+
+.download-banner-inner a:hover {
+  color: var(--color-text);
+}
+
+/* ============================================================
+   Header
+   ============================================================ */
+
+header {
+  margin-bottom: 40px;
+}
+
+.accent-bar {
+  width: 24px;
+  height: 4px;
+  background-color: var(--color-accent);
+  margin-bottom: 20px;
+}
+
+h1 {
+  font-size: 32px;
+  font-weight: 300;
+  letter-spacing: -0.5px;
+  color: var(--color-text);
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: var(--color-secondary);
+  line-height: 1.5;
+}
+
+/* ============================================================
+   Mode Toggle
+   ============================================================ */
+
+.mode-toggle {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  margin-bottom: 40px;
+  border-bottom: 1px solid var(--color-light-border);
+  padding-bottom: 12px;
+}
+
+.mode-link {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  color: var(--color-secondary);
+  padding-bottom: 4px;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.mode-link:hover {
+  color: var(--color-text);
+}
+
+.mode-link.active {
+  color: var(--color-text);
+  border-bottom-color: var(--color-text);
+}
+
+/* ============================================================
+   Field Groups & Labels
+   ============================================================ */
+
+.field-group {
+  margin-bottom: 32px;
+}
+
+.label {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-secondary);
+  margin-bottom: 10px;
+}
+
+/* ============================================================
+   Threshold Row
+   ============================================================ */
+
+.threshold-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.threshold-input {
+  width: 64px;
+  font-family: var(--font-stack);
+  font-size: 20px;
+  font-weight: 400;
+  text-align: center;
+  color: var(--color-text);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--color-border);
+  padding: 4px 0;
+  outline: none;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.threshold-input::-webkit-outer-spin-button,
+.threshold-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.threshold-input:focus {
+  border-bottom-color: var(--color-accent);
+}
+
+.threshold-of {
+  font-size: 14px;
+  color: var(--color-secondary);
+  font-weight: 400;
+}
+
+/* ============================================================
+   Textarea
+   ============================================================ */
+
+textarea {
+  display: block;
+  width: 100%;
+  font-family: var(--font-stack);
+  font-size: 14px;
+  color: var(--color-text);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  padding: 8px 0;
+  resize: vertical;
+  outline: none;
+  line-height: 1.6;
+}
+
+textarea:focus {
+  border-bottom-color: var(--color-accent);
+}
+
+textarea::placeholder {
+  color: var(--color-secondary);
+}
+
+textarea[readonly] {
+  cursor: default;
+  border-bottom-color: var(--color-light-border);
+}
+
+/* ============================================================
+   Byte Counter
+   ============================================================ */
+
+.byte-counter {
+  text-align: right;
+  font-size: 11px;
+  color: var(--color-secondary);
+  margin-top: 6px;
+}
+
+.byte-counter .over-limit {
+  color: var(--color-accent);
+  font-weight: 700;
+}
+
+.byte-counter .warning {
+  color: #e06000;
+  font-weight: 600;
+}
+
+/* ============================================================
+   Actions Row
+   ============================================================ */
+
+.actions {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+/* ============================================================
+   Buttons
+   ============================================================ */
+
+button {
+  font-family: var(--font-stack);
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s, opacity 0.15s;
+}
+
+.btn-primary {
+  display: inline-block;
+  background-color: var(--color-text);
+  color: var(--color-bg);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 12px 24px;
+  border: 2px solid var(--color-text);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.btn-primary:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  display: inline-block;
+  background-color: transparent;
+  color: var(--color-text);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 12px 24px;
+  border: 2px solid var(--color-border);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: var(--color-text);
+  color: var(--color-bg);
+}
+
+.btn-secondary:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.btn-small {
+  display: inline-block;
+  background-color: transparent;
+  color: var(--color-secondary);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 6px 12px;
+  border: 1px solid var(--color-light-border);
+}
+
+.btn-small:hover:not(:disabled) {
+  color: var(--color-text);
+  border-color: var(--color-text);
+}
+
+.btn-close {
+  background: transparent;
+  color: var(--color-text);
+  font-size: 20px;
+  font-weight: 400;
+  padding: 0 4px;
+  line-height: 1;
+  border: none;
+}
+
+.btn-close:hover {
+  color: var(--color-accent);
+}
+
+/* ============================================================
+   Output Sections
+   ============================================================ */
+
+.output {
+  margin-top: 40px;
+}
+
+.output h2 {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-secondary);
+  margin-bottom: 20px;
+}
+
+.output-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.output-header h2 {
+  margin-bottom: 0;
+}
+
+/* ============================================================
+   Share Cards
+   ============================================================ */
+
+.share-card {
+  border: 1px solid var(--color-light-border);
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.share-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-secondary);
+  margin-bottom: 16px;
+}
+
+.share-qr {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.share-qr canvas {
+  display: inline-block;
+}
+
+.share-text {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 11px;
+  color: var(--color-secondary);
+  word-break: break-all;
+  cursor: pointer;
+  line-height: 1.6;
+  position: relative;
+}
+
+.share-text:hover {
+  color: var(--color-text);
+}
+
+.copied-tooltip {
+  display: inline-block;
+  font-family: var(--font-stack);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-bg);
+  background-color: var(--color-text);
+  padding: 3px 8px;
+  margin-left: 8px;
+  vertical-align: middle;
+  pointer-events: none;
+}
+
+.qr-warning {
+  font-family: var(--font-stack);
+  font-size: 11px;
+  color: var(--color-accent);
+  margin-top: 8px;
+  font-style: italic;
+}
+
+/* ============================================================
+   Share Slots (Combine mode)
+   ============================================================ */
+
+.share-slot {
+  border: 1px solid var(--color-light-border);
+  margin-bottom: 16px;
+}
+
+.share-slot-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--color-light-border);
+}
+
+.share-slot-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-secondary);
+}
+
+.share-slot-status {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-secondary);
+}
+
+.share-slot-status.valid {
+  color: #008000;
+}
+
+.share-slot-status.invalid {
+  color: var(--color-accent);
+}
+
+.share-slot-body {
+  padding: 12px 16px;
+}
+
+.share-slot-input {
+  display: block;
+  width: 100%;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12px;
+  color: var(--color-text);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--color-light-border);
+  padding: 6px 0;
+  outline: none;
+}
+
+.share-slot-input:focus {
+  border-bottom-color: var(--color-accent);
+}
+
+.share-slot-input::placeholder {
+  color: var(--color-secondary);
+  font-family: var(--font-stack);
+  font-size: 12px;
+}
+
+.share-slot-actions {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+/* ============================================================
+   Recovered Secret
+   ============================================================ */
+
+.recovered-secret {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.recovered-secret textarea {
+  border: 1px solid var(--color-light-border);
+  border-bottom: 1px solid var(--color-light-border);
+  padding: 12px;
+  font-family: var(--font-stack);
+  font-size: 14px;
+}
+
+.recovered-secret textarea:focus {
+  border-color: var(--color-light-border);
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--color-secondary);
+  font-style: italic;
+  margin-top: 8px;
+}
+
+/* ============================================================
+   Camera Modal
+   ============================================================ */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modal[hidden] {
+  display: none;
+}
+
+.modal-content {
+  background-color: var(--color-bg);
+  width: 100%;
+  max-width: 480px;
+  margin: 0 20px;
+}
+
+.modal-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--color-light-border);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-secondary);
+}
+
+#camera-video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background-color: #000;
+}
+
+/* ============================================================
+   Footer
+   ============================================================ */
+
+footer {
+  margin-top: 64px;
+  padding-top: 24px;
+  border-top: 1px solid var(--color-light-border);
+}
+
+footer p {
+  font-size: 12px;
+  color: var(--color-secondary);
+  line-height: 1.7;
+}
+
+/* ============================================================
+   Utility
+   ============================================================ */
+
+[hidden] {
+  display: none !important;
+}
+
+/* ============================================================
+   Print Styles
+   ============================================================ */
+
+@media print {
+  /* Hide all UI chrome */
+  .download-banner,
+  .mode-toggle,
+  .field-group,
+  .actions,
+  .output-header .btn-secondary,
+  #section-combine,
+  footer,
+  .btn-print {
+    display: none !important;
+  }
+
+  body {
+    background: #fff;
+    color: #000;
+    font-family: var(--font-stack);
+  }
+
+  main {
+    max-width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+
+  header {
+    display: none;
+  }
+
+  .output {
+    margin-top: 0;
+  }
+
+  .output h2 {
+    display: none;
+  }
+
+  /* One share per page */
+  .share-card {
+    border: none;
+    padding: 0;
+    margin: 0;
+    page-break-after: always;
+    break-after: page;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    text-align: center;
+  }
+
+  .share-card:last-child {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  .share-label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #555;
+    margin-bottom: 24px;
+  }
+
+  .share-qr {
+    margin-bottom: 24px;
+  }
+
+  /* Minimum QR size 3cm */
+  .share-qr canvas {
+    min-width: 3cm;
+    min-height: 3cm;
+    image-rendering: pixelated;
+  }
+
+  .share-text {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 10px;
+    color: #333;
+    word-break: break-all;
+    max-width: 80%;
+    text-align: center;
+    cursor: default;
+  }
+
+  .copied-tooltip,
+  .qr-warning,
+  .share-slot-actions {
+    display: none !important;
+  }
+}
