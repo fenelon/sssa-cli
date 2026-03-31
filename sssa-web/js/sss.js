@@ -185,6 +185,148 @@
     return BigInt('0x' + hexPairs.join(''));
   }
 
+  /**
+   * Creates Shamir secret shares.
+   *
+   * @param {number} minimum  - Minimum shares needed to reconstruct the secret.
+   * @param {number} total    - Total number of shares to generate.
+   * @param {string} raw      - The secret string (UTF-8, max 512 bytes).
+   * @returns {string[]}      - Array of `total` base64-encoded share strings.
+   *
+   * Each share is a concatenation of base64(x) + base64(y) pairs, one per
+   * secret chunk (44 chars each), giving a total length of chunks * 88 chars.
+   */
+  function create(minimum, total, raw) {
+    if (minimum < 2) {
+      throw new Error('minimum must be >= 2');
+    }
+    if (total < minimum) {
+      throw new Error('total must be >= minimum');
+    }
+    var encoder = new TextEncoder();
+    var byteLen = encoder.encode(raw).length;
+    if (byteLen > 512) {
+      throw new Error('secret exceeds 512 bytes');
+    }
+
+    var secrets = splitInts(raw);
+    var shares = [];
+
+    // Pre-generate unique random x-values for each share
+    var xValues = [];
+    for (var s = 0; s < total; s++) {
+      var x;
+      do {
+        x = random();
+      } while (xValues.some(function (v) { return v === x; }));
+      xValues.push(x);
+    }
+
+    // Build polynomial for each secret chunk and evaluate at each x
+    // Start by initialising share strings to empty
+    for (var s2 = 0; s2 < total; s2++) {
+      shares.push('');
+    }
+
+    for (var i = 0; i < secrets.length; i++) {
+      // Build polynomial coefficients: [secret[i], r1, r2, ..., r_{minimum-1}]
+      var coefficients = [secrets[i]];
+      for (var k = 1; k < minimum; k++) {
+        var coeff;
+        do {
+          coeff = random();
+        } while (coefficients.some(function (v) { return v === coeff; }));
+        coefficients.push(coeff);
+      }
+
+      // Evaluate polynomial at each x and append x+y pair to the share string
+      for (var s3 = 0; s3 < total; s3++) {
+        var y = evaluatePolynomial(coefficients, xValues[s3]);
+        shares[s3] += toBase64(xValues[s3]) + toBase64(y);
+      }
+    }
+
+    return shares;
+  }
+
+  /**
+   * Combines Shamir secret shares to recover the original secret.
+   *
+   * @param {string[]} shares - Array of share strings (as produced by create).
+   * @returns {string}        - The recovered secret string.
+   *
+   * Uses Lagrange interpolation over the prime field to recover each secret
+   * chunk at x=0.
+   */
+  function combine(shares) {
+    // Maps any BigInt to its canonical representative in [0, PRIME)
+    function modPos(v) { return ((v % PRIME) + PRIME) % PRIME; }
+
+    // Determine how many secret chunks each share encodes
+    var count = shares[0].length / 88;
+
+    var secrets = [];
+    for (var i = 0; i < count; i++) {
+      // Parse x and y for each share for this chunk
+      var points = [];
+      for (var j = 0; j < shares.length; j++) {
+        var xStr = shares[j].substring(i * 88, i * 88 + 44);
+        var yStr = shares[j].substring(i * 88 + 44, i * 88 + 88);
+        points.push([fromBase64(xStr), fromBase64(yStr)]);
+      }
+
+      // Lagrange interpolation at x=0
+      var secret = 0n;
+      for (var a = 0; a < points.length; a++) {
+        var numerator = 1n;
+        var denominator = 1n;
+        for (var b = 0; b < points.length; b++) {
+          if (a !== b) {
+            numerator = modPos(numerator * modPos(0n - points[b][0]));
+            denominator = modPos(denominator * modPos(points[a][0] - points[b][0]));
+          }
+        }
+        // Compute contribution: y_a * numerator * modInverse(denominator)
+        var contribution = modPos(points[a][1] * numerator * modInverse(denominator));
+        secret = modPos(secret + contribution);
+      }
+
+      secrets.push(secret);
+    }
+
+    return mergeInts(secrets);
+  }
+
+  /**
+   * Returns true if candidate is a syntactically valid share string.
+   *
+   * A valid share has length > 0, length divisible by 88, and every 44-char
+   * block decodes (via fromBase64) to a value in [0, PRIME].
+   *
+   * @param {string} candidate
+   * @returns {boolean}
+   */
+  function isValidShare(candidate) {
+    if (!candidate || candidate.length === 0 || candidate.length % 88 !== 0) {
+      return false;
+    }
+    var count = candidate.length / 88;
+    for (var j = 0; j < count; j++) {
+      var xStr = candidate.substring(j * 88, j * 88 + 44);
+      var yStr = candidate.substring(j * 88 + 44, j * 88 + 88);
+      try {
+        var x = fromBase64(xStr);
+        var y = fromBase64(yStr);
+        if (x < 0n || x > PRIME || y < 0n || y > PRIME) {
+          return false;
+        }
+      } catch (e) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   // Attach to global namespace
   global.SSS = {
     _prime: PRIME,
@@ -196,5 +338,8 @@
     modInverse: modInverse,
     toBase64: toBase64,
     fromBase64: fromBase64,
+    create: create,
+    combine: combine,
+    isValidShare: isValidShare,
   };
 })(typeof window !== 'undefined' ? window : this);
