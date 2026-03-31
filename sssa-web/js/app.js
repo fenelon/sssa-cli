@@ -27,7 +27,6 @@
   var splitOutput    = document.getElementById('split-output');
   var sharesList     = document.getElementById('shares-list');
   var shareInputs    = document.getElementById('share-inputs');
-  var btnAddShare    = document.getElementById('btn-add-share');
   var btnCombine     = document.getElementById('btn-combine');
   var combineOutput  = document.getElementById('combine-output');
   var recoveredText  = document.getElementById('recovered-text');
@@ -266,85 +265,78 @@
   });
 
   // ---------------------------------------------------------------------------
-  // 6. Combine share slots
+  // 6. Combine cards
   // ---------------------------------------------------------------------------
-  var slotCount = 0;   // ever-increasing counter for slot ids
-  var cameraController = null;  // active camera controller
-  var activeCameraSlot = null;  // the slot that opened the camera
+  var cameraController = null;
+  var activeCameraSlot = null;
 
   /**
-   * Creates a share slot div and appends it to shareInputs.
+   * Creates a filled (read-only) share card and inserts it before the Add Share card.
    */
-  function createShareSlot() {
-    slotCount++;
-    var slotIndex = slotCount; // captured for this slot
+  function createFilledCard(shareData) {
+    var card = document.createElement('div');
+    card.className = 'combine-card combine-card-filled';
+    card.dataset.share = shareData;
 
-    var slot = document.createElement('div');
-    slot.className = 'share-slot';
-    slot.dataset.slotId = slotIndex;
+    var label = document.createElement('div');
+    label.className = 'combine-card-label';
+    label.textContent = 'Share';
+    card.appendChild(label);
 
-    // --- Header (label + status) ---
-    var header = document.createElement('div');
-    header.className = 'share-slot-header';
+    var preview = document.createElement('div');
+    preview.className = 'combine-card-preview';
+    preview.textContent = shareData.substring(0, 20) + '...';
+    card.appendChild(preview);
 
-    var slotLabel = document.createElement('span');
-    slotLabel.className = 'share-slot-label';
-    // Placeholder text — renumberSlots() will set the correct ordinal after appending
-    slotLabel.textContent = 'Share';
-
-    var status = document.createElement('span');
-    status.className = 'share-slot-status';
-
-    header.appendChild(slotLabel);
-    header.appendChild(status);
-    slot.appendChild(header);
-
-    // --- Text input ---
-    var textInput = document.createElement('input');
-    textInput.type = 'text';
-    textInput.className = 'share-slot-input';
-    textInput.placeholder = 'Paste share here…';
-    textInput.setAttribute('autocomplete', 'off');
-    textInput.setAttribute('spellcheck', 'false');
-
-    textInput.addEventListener('input', function () {
-      var val = textInput.value.trim();
-      if (val === '') {
-        status.textContent = '';
-        status.className = 'share-slot-status';
-      } else if (SSS.isValidShare(val)) {
-        status.textContent = '\u2713'; // checkmark
-        status.className = 'share-slot-status valid';
-      } else {
-        status.textContent = '\u2717'; // cross
-        status.className = 'share-slot-status invalid';
-      }
+    var btnRemove = document.createElement('button');
+    btnRemove.className = 'combine-card-remove';
+    btnRemove.textContent = '\u00d7';
+    btnRemove.addEventListener('click', function () {
+      shareInputs.removeChild(card);
+      renumberCards();
       validateCombine();
     });
+    card.appendChild(btnRemove);
 
-    slot.appendChild(textInput);
+    // Insert before the Add Share card (always last child)
+    var addCard = shareInputs.querySelector('.combine-card-add');
+    shareInputs.insertBefore(card, addCard);
+    renumberCards();
+    validateCombine();
+  }
 
-    // --- Action buttons ---
+  /**
+   * Resets the Add Share card back to its 3-button state.
+   */
+  function resetAddCard() {
+    var addCard = shareInputs.querySelector('.combine-card-add');
+    if (!addCard) return;
+
+    // Clear everything after the label
+    while (addCard.children.length > 1) {
+      addCard.removeChild(addCard.lastChild);
+    }
+
     var actions = document.createElement('div');
-    actions.className = 'share-slot-actions';
+    actions.className = 'combine-card-actions';
 
-    // Scan QR (camera)
+    // Scan QR button
     if (SSS.Scanner.hasCamera) {
       var btnScan = document.createElement('button');
       btnScan.className = 'btn-secondary';
       btnScan.textContent = 'Scan QR';
       btnScan.addEventListener('click', function () {
-        activeCameraSlot = { input: textInput, status: status };
+        activeCameraSlot = { callback: createFilledCard };
         openCamera();
       });
       actions.appendChild(btnScan);
     }
 
-    // Upload Image
+    // Upload QR Code Image button
     if (SSS.Scanner.hasBarcodeDetector) {
       var btnUpload = document.createElement('button');
       btnUpload.className = 'btn-secondary';
-      btnUpload.textContent = 'Upload Image';
+      btnUpload.textContent = 'Upload QR Code Image';
 
       var fileInput = document.createElement('input');
       fileInput.type = 'file';
@@ -355,12 +347,14 @@
         var file = fileInput.files[0];
         if (!file) return;
         SSS.Scanner.scanImage(file).then(function (text) {
-          textInput.value = text;
-          textInput.dispatchEvent(new Event('input'));
+          if (SSS.isValidShare(text)) {
+            createFilledCard(text);
+          } else {
+            showPasteMode(text);
+          }
         }).catch(function (err) {
           alert('Could not read QR code from image: ' + err.message);
         });
-        // Reset so the same file can be re-selected
         fileInput.value = '';
       });
 
@@ -369,36 +363,103 @@
       });
 
       actions.appendChild(btnUpload);
-      slot.appendChild(fileInput);
+      addCard.appendChild(fileInput);
     }
 
-    // Remove button
-    var btnRemove = document.createElement('button');
-    btnRemove.className = 'btn-secondary';
-    btnRemove.textContent = 'Remove';
-    btnRemove.addEventListener('click', function () {
-      if (shareInputs.children.length > 2) {
-        shareInputs.removeChild(slot);
-        renumberSlots();
-        validateCombine();
-      }
+    // Paste Text button
+    var btnPaste = document.createElement('button');
+    btnPaste.className = 'btn-secondary';
+    btnPaste.textContent = 'Paste Text';
+    btnPaste.addEventListener('click', function () {
+      showPasteMode('');
     });
-    actions.appendChild(btnRemove);
+    actions.appendChild(btnPaste);
 
-    slot.appendChild(actions);
-    shareInputs.appendChild(slot);
-
-    // Re-number after insertion so the new slot label is correct
-    renumberSlots();
+    addCard.appendChild(actions);
   }
 
   /**
-   * Updates share slot labels to reflect current order after additions/removals.
+   * Switches the Add Share card into paste-text input mode.
+   * @param {string} prefill — optional text to pre-fill the input with
    */
-  function renumberSlots() {
-    var slots = shareInputs.querySelectorAll('.share-slot');
-    slots.forEach(function (s, i) {
-      var lbl = s.querySelector('.share-slot-label');
+  function showPasteMode(prefill) {
+    var addCard = shareInputs.querySelector('.combine-card-add');
+    if (!addCard) return;
+
+    // Clear everything after the label
+    while (addCard.children.length > 1) {
+      addCard.removeChild(addCard.lastChild);
+    }
+
+    var textInput = document.createElement('input');
+    textInput.type = 'text';
+    textInput.className = 'combine-card-input';
+    textInput.placeholder = 'Paste share here\u2026';
+    textInput.setAttribute('autocomplete', 'off');
+    textInput.setAttribute('spellcheck', 'false');
+    if (prefill) textInput.value = prefill;
+
+    var errorMsg = document.createElement('div');
+    errorMsg.className = 'combine-card-error';
+    errorMsg.setAttribute('hidden', '');
+
+    textInput.addEventListener('input', function () {
+      var val = textInput.value.trim();
+      if (val === '') {
+        errorMsg.setAttribute('hidden', '');
+      } else if (SSS.isValidShare(val)) {
+        errorMsg.setAttribute('hidden', '');
+        createFilledCard(val);
+        resetAddCard();
+      } else {
+        errorMsg.textContent = 'Invalid share format';
+        errorMsg.removeAttribute('hidden');
+      }
+    });
+
+    addCard.appendChild(textInput);
+    addCard.appendChild(errorMsg);
+
+    // Back button to return to 3-button mode
+    var btnBack = document.createElement('button');
+    btnBack.className = 'btn-small combine-card-paste-back';
+    btnBack.textContent = 'Back';
+    btnBack.addEventListener('click', function () {
+      resetAddCard();
+    });
+    addCard.appendChild(btnBack);
+
+    textInput.focus();
+
+    // Trigger validation if prefilled
+    if (prefill) {
+      textInput.dispatchEvent(new Event('input'));
+    }
+  }
+
+  /**
+   * Creates the Add Share card and appends it to shareInputs.
+   */
+  function createAddShareCard() {
+    var card = document.createElement('div');
+    card.className = 'combine-card combine-card-add';
+
+    var label = document.createElement('div');
+    label.className = 'combine-card-label';
+    label.textContent = 'Add Share';
+    card.appendChild(label);
+
+    shareInputs.appendChild(card);
+    resetAddCard();
+  }
+
+  /**
+   * Updates filled card labels to reflect current order.
+   */
+  function renumberCards() {
+    var cards = shareInputs.querySelectorAll('.combine-card-filled');
+    cards.forEach(function (c, i) {
+      var lbl = c.querySelector('.combine-card-label');
       if (lbl) {
         lbl.textContent = 'Share ' + (i + 1);
       }
@@ -406,35 +467,26 @@
   }
 
   /**
-   * Returns an array of trimmed share strings from slots that are valid.
+   * Returns an array of share strings from filled cards.
    */
   function getValidShares() {
     var result = [];
-    var inputs = shareInputs.querySelectorAll('.share-slot-input');
-    inputs.forEach(function (inp) {
-      var val = inp.value.trim();
-      if (SSS.isValidShare(val)) {
-        result.push(val);
-      }
+    var cards = shareInputs.querySelectorAll('.combine-card-filled');
+    cards.forEach(function (c) {
+      result.push(c.dataset.share);
     });
     return result;
   }
 
   /**
-   * Enables btn-combine when there are >= 2 valid shares.
+   * Enables btn-combine when there are >= 2 filled cards.
    */
   function validateCombine() {
     btnCombine.disabled = getValidShares().length < 2;
   }
 
-  // Initialise with 2 slots
-  createShareSlot();
-  createShareSlot();
-
-  // Add more slots on demand
-  btnAddShare.addEventListener('click', function () {
-    createShareSlot();
-  });
+  // Initialise with the Add Share card
+  createAddShareCard();
 
   // ---------------------------------------------------------------------------
   // 7. Camera
@@ -443,11 +495,10 @@
     cameraModal.removeAttribute('hidden');
     try {
       cameraController = SSS.Scanner.startCamera(cameraVideo, function (text) {
-        var slot = activeCameraSlot;
+        var callback = activeCameraSlot && activeCameraSlot.callback;
         closeCamera();
-        if (slot) {
-          slot.input.value = text;
-          slot.input.dispatchEvent(new Event('input'));
+        if (callback && SSS.isValidShare(text)) {
+          callback(text);
         }
       });
     } catch (err) {
