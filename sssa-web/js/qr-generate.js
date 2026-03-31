@@ -2313,8 +2313,8 @@ var qrcode = function() {
     var moduleCount = qr.getModuleCount();
     var quietZone = options.quietZone !== undefined ? options.quietZone : 4;
     var totalModules = moduleCount + quietZone * 2;
-    // Use integer cell size for crisp pixels (minimum 4px per module)
-    var cellSize = Math.max(4, Math.ceil(displaySize / totalModules));
+    // Use integer cell size for crisp pixels (minimum 8px per module for print quality)
+    var cellSize = Math.max(8, Math.ceil(displaySize / totalModules));
     var actualSize = totalModules * cellSize;
     canvas.width = actualSize;
     canvas.height = actualSize;
