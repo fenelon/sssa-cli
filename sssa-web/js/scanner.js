@@ -73,7 +73,7 @@
         scan();
       };
     }).catch(function(err) {
-      if (!stopped) throw err;
+      if (!stopped) console.error('Camera error:', err);
     });
 
     return {

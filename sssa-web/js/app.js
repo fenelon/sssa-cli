@@ -182,7 +182,7 @@
    */
   function showTooltip(anchor, message) {
     var tip = document.createElement('span');
-    tip.className = 'tooltip';
+    tip.className = 'copied-tooltip';
     tip.textContent = message;
     anchor.appendChild(tip);
     setTimeout(function () {
@@ -311,9 +311,11 @@
     btnRemove.className = 'btn-secondary';
     btnRemove.textContent = 'Remove';
     btnRemove.addEventListener('click', function () {
-      shareInputs.removeChild(slot);
-      renumberSlots();
-      validateCombine();
+      if (shareInputs.children.length > 2) {
+        shareInputs.removeChild(slot);
+        renumberSlots();
+        validateCombine();
+      }
     });
     actions.appendChild(btnRemove);
 

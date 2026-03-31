@@ -38,7 +38,24 @@
       parts.push('  <style>.download-banner { display: none !important; }</style>');
       parts.push('</head>');
       parts.push('<body>');
-      parts.push(document.querySelector('main').outerHTML);
+
+      // Clone DOM to avoid capturing user-entered secrets
+      var mainClone = document.querySelector('main').cloneNode(true);
+      // Clear any input values from the clone
+      mainClone.querySelectorAll('input, textarea').forEach(function(el) {
+        el.value = '';
+        el.removeAttribute('value');
+        el.textContent = '';
+      });
+      // Remove generated share output
+      var cloneOutput = mainClone.querySelector('#split-output');
+      if (cloneOutput) cloneOutput.setAttribute('hidden', '');
+      var cloneShares = mainClone.querySelector('#shares-list');
+      if (cloneShares) while (cloneShares.firstChild) cloneShares.removeChild(cloneShares.firstChild);
+      var cloneCombineOut = mainClone.querySelector('#combine-output');
+      if (cloneCombineOut) cloneCombineOut.setAttribute('hidden', '');
+
+      parts.push(mainClone.outerHTML);
       parts.push(document.getElementById('camera-modal').outerHTML);
       parts.push('  <script>');
       parts.push(jsContent);

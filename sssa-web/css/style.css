@@ -243,12 +243,12 @@ textarea[readonly] {
   margin-top: 6px;
 }
 
-.byte-counter .over-limit {
+.byte-counter.over-limit {
   color: var(--color-accent);
   font-weight: 700;
 }
 
-.byte-counter .warning {
+.byte-counter.warning {
   color: #e06000;
   font-weight: 600;
 }
