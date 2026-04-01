@@ -14,7 +14,7 @@
   --color-secondary: #555555;
   --color-border: #2a2a2a;
   --color-light-border: #222222;
-  --color-dim: #333333;
+  --color-dim: #666666;
   --font-stack: 'Helvetica Neue', Helvetica, sans-serif;
   --max-width: 640px;
 }
@@ -66,7 +66,7 @@ main {
 }
 
 .download-banner-inner {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--color-secondary);
   max-width: var(--max-width);
   margin: 0 auto;
@@ -122,7 +122,7 @@ h1 {
 
 .logo-shard {
   color: var(--color-accent);
-  font-size: 14px;
+  font-size: 16px;
   vertical-align: super;
   margin-left: 2px;
   display: inline-block;
@@ -130,7 +130,7 @@ h1 {
 }
 
 .subtitle {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--color-secondary);
   line-height: 1.5;
 }
@@ -149,7 +149,7 @@ h1 {
 }
 
 .mode-link {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -179,7 +179,7 @@ h1 {
 
 .label {
   display: block;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -227,7 +227,7 @@ h1 {
 }
 
 .threshold-of {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--color-secondary);
   font-weight: 400;
 }
@@ -240,7 +240,7 @@ textarea {
   display: block;
   width: 100%;
   font-family: var(--font-stack);
-  font-size: 14px;
+  font-size: 16px;
   color: var(--color-text);
   background: var(--color-input);
   border: 1px solid var(--color-border);
@@ -277,7 +277,7 @@ textarea[readonly]:focus {
 
 .byte-counter {
   text-align: right;
-  font-size: 11px;
+  font-size: 13px;
   color: var(--color-dim);
   margin-top: 6px;
 }
@@ -289,7 +289,7 @@ textarea[readonly]:focus {
 
 /* Over-limit message under secret input */
 .over-limit-msg {
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   color: var(--color-accent);
   font-weight: 700;
   margin-top: 0.375rem;
@@ -297,7 +297,7 @@ textarea[readonly]:focus {
 
 /* QR size warning under secret input */
 .qr-size-warning {
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   color: #b35900;
   margin-top: 0.375rem;
   font-style: italic;
@@ -331,7 +331,7 @@ button {
   display: inline-block;
   background-color: var(--color-accent);
   color: #ffffff;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -353,7 +353,7 @@ button {
   display: inline-block;
   background-color: transparent;
   color: #cccccc;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -375,7 +375,7 @@ button {
   display: inline-block;
   background-color: transparent;
   color: var(--color-secondary);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -411,7 +411,7 @@ button {
 }
 
 .output h2 {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -451,7 +451,7 @@ button {
 }
 
 .share-label {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -470,7 +470,7 @@ button {
 
 .share-text {
   font-family: 'Courier New', Courier, monospace;
-  font-size: 11px;
+  font-size: 13px;
   color: var(--color-accent);
   word-break: break-all;
   cursor: pointer;
@@ -488,7 +488,7 @@ button {
   right: 0;
   top: 0;
   font-family: var(--font-stack);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -529,7 +529,7 @@ button {
 }
 
 .combine-card-label {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -543,7 +543,7 @@ button {
 
 .combine-card-preview {
   font-family: 'Courier New', Courier, monospace;
-  font-size: 14px;
+  font-size: 16px;
   color: var(--color-text);
   word-break: break-all;
   line-height: 1.5;
@@ -583,7 +583,7 @@ button {
   display: block;
   width: 100%;
   font-family: 'Courier New', Courier, monospace;
-  font-size: 12px;
+  font-size: 14px;
   color: var(--color-text);
   background: transparent;
   border: none;
@@ -599,11 +599,11 @@ button {
 .combine-card-input::placeholder {
   color: var(--color-secondary);
   font-family: var(--font-stack);
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .combine-card-error {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--color-accent);
   margin-top: 6px;
 }
@@ -639,7 +639,7 @@ button {
   border-radius: 4px;
   padding: 12px;
   font-family: var(--font-stack);
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .recovered-secret textarea:focus {
@@ -648,7 +648,7 @@ button {
 }
 
 .hint {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--color-secondary);
   font-style: italic;
   margin-top: 8px;
@@ -686,7 +686,7 @@ button {
   justify-content: space-between;
   padding: 14px 16px;
   border-bottom: 1px solid var(--color-raised);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -712,27 +712,27 @@ footer {
 }
 
 .footer-description h2 {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: var(--color-dim);
+  color: var(--color-text);
   margin-bottom: 16px;
 }
 
 .footer-description p {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--color-dim);
   line-height: 1.7;
   margin-bottom: 24px;
 }
 
 .footer-description h3 {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--color-dim);
+  color: var(--color-text);
   margin-bottom: 12px;
 }
 
@@ -743,7 +743,7 @@ footer {
 }
 
 .use-cases li {
-  font-size: 13px;
+  font-size: 15px;
   color: var(--color-dim);
   line-height: 1.7;
   padding: 8px 0;
@@ -755,7 +755,7 @@ footer {
 }
 
 .use-cases li strong {
-  color: var(--color-secondary);
+  color: var(--color-text);
 }
 
 /* Privacy badge */
@@ -770,8 +770,8 @@ footer {
 }
 
 .privacy-badge p {
-  font-size: 13px;
-  color: var(--color-secondary);
+  font-size: 15px;
+  color: var(--color-text);
   line-height: 1.6;
   margin: 0;
 }
@@ -786,24 +786,23 @@ footer {
   padding-top: 16px;
 }
 
+.footer-bottom .copyright,
+.footer-bottom .attribution {
+  font-size: 15px;
+  color: var(--color-dim);
+}
+
 .footer-bottom .copyright {
-  font-size: 11px;
-  color: var(--color-secondary);
   margin-bottom: 4px;
 }
 
-.footer-bottom .copyright a {
+.footer-bottom a {
   color: var(--color-secondary);
   text-decoration: underline;
 }
 
-.footer-bottom .copyright a:hover {
+.footer-bottom a:hover {
   color: var(--color-text);
-}
-
-.footer-bottom .attribution {
-  font-size: 11px;
-  color: var(--color-dim);
 }
 
 /* ============================================================
@@ -827,13 +826,13 @@ footer {
 }
 
 .inline-error {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--color-accent);
   font-weight: 600;
 }
 
 .camera-error {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--color-accent);
   padding: 12px 16px;
   text-align: center;
@@ -907,7 +906,7 @@ footer {
   }
 
   .share-label {
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.12em;
@@ -919,7 +918,7 @@ footer {
     content: 'This is a piece of a shared secret created by SecretShards.com.\A You can recover it there if you have enough pieces (shares).';
     white-space: pre-line;
     display: block;
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 400;
     text-transform: none;
     letter-spacing: 0;
@@ -942,7 +941,7 @@ footer {
 
   .share-text {
     font-family: 'Courier New', Courier, monospace;
-    font-size: 10px;
+    font-size: 12px;
     color: #333;
     word-break: break-all;
     max-width: 9cm; /* ≤125% of QR code width (6cm) */

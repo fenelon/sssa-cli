@@ -40,6 +40,7 @@
   const cameraErrorEl  = document.getElementById('camera-error');
   const btnCloseCamera = document.getElementById('btn-close-camera');
   const downloadLink   = document.getElementById('download-link');
+  const thresholdError = document.getElementById('threshold-error');
 
   // ---------------------------------------------------------------------------
   // 2. Inline error helpers (replaces alert())
@@ -121,6 +122,24 @@
     const total   = parseInt(inputTotal.value, 10);
     const secret  = inputSecret.value;
     const bytes   = new TextEncoder().encode(secret).length;
+
+    // Threshold validation
+    var thresholdMsg = '';
+    if (isNaN(min) || min < 2) {
+      thresholdMsg = 'Minimum must be at least 2';
+    } else if (isNaN(total) || total < 2) {
+      thresholdMsg = 'Total must be at least 2';
+    } else if (total > 255) {
+      thresholdMsg = 'Total cannot exceed 255';
+    } else if (min > total) {
+      thresholdMsg = 'Minimum cannot exceed total';
+    }
+
+    if (thresholdMsg) {
+      showInlineError(thresholdError, thresholdMsg);
+    } else {
+      clearInlineError(thresholdError);
+    }
 
     const ok = (
       min >= 2 &&
@@ -342,7 +361,7 @@
     }
 
     // Upload QR Code Image button
-    if (SSS.Scanner.hasBarcodeDetector) {
+    {
       const btnUpload = document.createElement('button');
       btnUpload.className = 'btn-secondary';
       btnUpload.textContent = 'Upload QR Image';

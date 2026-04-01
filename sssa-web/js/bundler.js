@@ -4,7 +4,7 @@
   const Bundler = {};
 
   const CSS_FILES = ['css/style.css'];
-  const JS_FILES = ['js/sss.js', 'js/qr-generate.js', 'js/scanner.js', 'js/app.js'];
+  const JS_FILES = ['js/sss.js', 'js/qr-bundle.js', 'js/qr.js', 'js/scanner.js', 'js/app.js'];
 
   Bundler.download = function() {
     const allPaths = ['index.html'].concat(CSS_FILES, JS_FILES);

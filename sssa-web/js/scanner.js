@@ -1,5 +1,5 @@
 // sssa-web/js/scanner.js
-// QR code scanning via native BarcodeDetector API
+// QR code scanning via SSS.QR.decode (paulmillr-qr)
 // Camera + file upload + manual text input
 
 (function() {
@@ -7,11 +7,10 @@
 
   if (!window.SSS) window.SSS = {};
 
-  const Scanner = {};
+  var Scanner = {};
 
-  // Feature detection
-  Scanner.hasBarcodeDetector = typeof BarcodeDetector !== 'undefined';
-  Scanner.hasCamera = Scanner.hasBarcodeDetector &&
+  // Feature detection — camera requires getUserMedia + HTTPS (not file://)
+  Scanner.hasCamera =
     !!navigator.mediaDevices &&
     !!navigator.mediaDevices.getUserMedia &&
     location.protocol !== 'file:';
@@ -19,15 +18,16 @@
   // Scan a QR code from an image file (File or Blob)
   // Returns: Promise<string> -- decoded text, or rejects
   Scanner.scanImage = function(file) {
-    if (!Scanner.hasBarcodeDetector) {
-      return Promise.reject(new Error('BarcodeDetector not available'));
-    }
-    const detector = new BarcodeDetector({ formats: ['qr_code'] });
     return createImageBitmap(file).then(function(bitmap) {
-      return detector.detect(bitmap);
-    }).then(function(barcodes) {
-      if (barcodes.length === 0) throw new Error('No QR code found in image');
-      return barcodes[0].rawValue;
+      var canvas = document.createElement('canvas');
+      canvas.width = bitmap.width;
+      canvas.height = bitmap.height;
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(bitmap, 0, 0);
+      var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      var result = SSS.QR.decode(imageData);
+      if (!result) throw new Error('No QR code found in image');
+      return result;
     });
   };
 
@@ -41,10 +41,11 @@
       throw new Error('Camera scanning not available');
     }
 
-    const detector = new BarcodeDetector({ formats: ['qr_code'] });
-    let stream = null;
-    let animationId = null;
-    let stopped = false;
+    var canvas = document.createElement('canvas');
+    var ctx = canvas.getContext('2d');
+    var stream = null;
+    var animationId = null;
+    var stopped = false;
 
     navigator.mediaDevices.getUserMedia({
       video: { facingMode: 'environment' }
@@ -59,16 +60,20 @@
 
       function scan() {
         if (stopped) return;
-        detector.detect(videoElement).then(function(barcodes) {
-          if (stopped) return;
-          if (barcodes.length > 0) {
-            onDetect(barcodes[0].rawValue);
-          } else {
-            animationId = requestAnimationFrame(scan);
-          }
-        }).catch(function() {
-          if (!stopped) animationId = requestAnimationFrame(scan);
-        });
+        if (videoElement.readyState < videoElement.HAVE_CURRENT_DATA) {
+          animationId = requestAnimationFrame(scan);
+          return;
+        }
+        canvas.width = videoElement.videoWidth;
+        canvas.height = videoElement.videoHeight;
+        ctx.drawImage(videoElement, 0, 0);
+        var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        var result = SSS.QR.decode(imageData);
+        if (result) {
+          onDetect(result);
+        } else {
+          animationId = requestAnimationFrame(scan);
+        }
       }
       videoElement.onloadedmetadata = function() {
         scan();
