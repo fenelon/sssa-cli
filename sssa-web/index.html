@@ -22,13 +22,9 @@
   <!-- Download banner (hosted version only) -->
   <div id="download-banner" class="download-banner">
     <div class="download-banner-inner">
-      <strong>For sensitive secrets, <a href="#" id="download-link">download and run offline</a>.</strong>
-      This app runs entirely in your browser — nothing is sent to any server.
-      For additional peace of mind, download a self-contained copy and run it without an internet connection.
-      Note that QR scanning is unavailable in offline mode due to browser security restrictions.
-      Keep in mind that a secret like a PIN or password is often just one layer of security — knowing
-      a PIN doesn't automatically grant access to someone's credit card.
-      See the <a href="#about">examples below</a> for best practices and use cases.
+      This app runs entirely in your browser — nothing is sent to any server.<br>
+      For extremely sensitive secrets, <strong><a href="#" id="download-link">download and run offline</a></strong>.
+      See <a href="#offline-mode">offline mode notes</a> below.
     </div>
   </div>
 
@@ -115,6 +111,14 @@
           <li><strong>Business continuity</strong> — Distribute access to critical systems among team leads. If someone leaves or is unavailable, the remaining team can still recover access.</li>
           <li><strong>Estate planning</strong> — Include shares of important passwords or PINs in documents held by different trusted parties, ensuring access passes on without exposing secrets prematurely.</li>
           <li><strong>Secure backup</strong> — Split any sensitive text — API keys, recovery codes, encryption passphrases — and store the shares in different places: a safe, a cloud drive, a trusted friend.</li>
+        </ul>
+      </section>
+
+      <section id="offline-mode" class="footer-description">
+        <h3>Offline mode</h3>
+        <ul class="use-cases">
+          <li><strong>Using the hosted version is fine for most secrets.</strong> Nothing is sent to any server — everything runs in your browser. And many secrets (like a PIN or password) are just one layer of security and useless without the thing they protect.</li>
+          <li><strong>Camera scanning requires a web server.</strong> When running offline, QR scanning via camera is unavailable due to browser restrictions. File upload and copy/paste work fine.</li>
         </ul>
       </section>
 
